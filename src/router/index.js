@@ -70,12 +70,12 @@ const routes = [
   },
   {
     path: '/payForPaperPublication',
-    name: 'paperTracker',
+    name: 'paperForAcceptedPaper',
     component: () => import('@/views/payForPaperPublication.vue')
   },
   {
     path: '/payToGetRestrictedPaper',
-    name: 'paperTracker',
+    name: 'subscriptionLikePay',
     component: () => import('@/views/payToGetRestrictedPaper.vue')
   }
 ]
