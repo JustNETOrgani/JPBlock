@@ -3,7 +3,7 @@
         <div id="topNav">
           <el-link icon="el-icon-arrow-left" style="font-size:17px;float:left;" @click="backToPrvPack">Previous Page</el-link>
         </div>
-        <div class="body" v-loading="loadingAuthorSubPage">
+        <div class="body" v-loading="loadingData">
             <h3 id="pageInfo">Welcome to Paper Submission. Upload files and fill the form.</h3>
             <el-row>
                 <el-col :span="22">
@@ -217,7 +217,7 @@ export default {
       authorUploads: null,
       accountNumForm: { accountNum: '' },
       accountIndexEntered: '',
-      loadingAuthorSubPage: false,
+      loadingData: false,
       authorSubBtnLoadState: false,
       accountDialog: false,
       hashCopyAlertDialog: false,
@@ -262,19 +262,28 @@ export default {
           type: 'info',
           message: `action: ${action}`
         })
+        this.loadingData = true
+        const jObj = []
+        var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
+        console.log('Contract instance for access type retrieval created.')
+        // Smart contract and other logic continues.
+        jpBlockContract.methods.getRegisteredJournals().call({ from: web3.eth.defaultAccount }).then(journalList => {
+          for (let i = 0; i < journalList[2].length; i++) {
+            jObj[i] = { id: i, name: (web3.utils.hexToAscii(journalList[2][i])).replace(/[^a-z]/gi, '') }
+            // [^a-z] matches every alphabet and 'i' flag makes it case insensitive.
+            // `g` flag checks for multiple instances.
+          }
+          this.journals = jObj
+          this.loadingData = false
+          // Open the account dialog box.
+          this.accountDialog = true
+        }).catch((error) => {
+          console.log('Error occurred.', error)
+          this.getAccBalLoadBtn = false
+          this.$message.error('Sorry! Transaction error. Please, try again later.')
+        })
       }
     })
-    this.loadingAuthorSubPage = true
-    // To be improved by calling Smart Contract to fetch list of registered journals.
-    const jObj = []
-    const journalList = ['IEEEAccess', 'Future System', 'Ledger', 'Sensors', 'JustPublishers']
-    for (let i = 0; i < journalList.length; i++) {
-      jObj[i] = { id: i, name: journalList[i] }
-    }
-    this.journals = jObj
-    this.loadingAuthorSubPage = false
-    // Open the account dialog box.
-    this.accountDialog = true
   },
   watch: {
     'authorSubForm.authorsIDs' () {

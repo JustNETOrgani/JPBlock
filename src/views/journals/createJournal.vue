@@ -151,7 +151,7 @@ export default {
                   try {
                     jpBlockContract.methods.createJournal(data.jName, data.jURL, data.jIF, data.jOAPrice, data.jnOAPrice, data.jRestrictedPrice, data.jPubKey).send({
                       from: web3.eth.defaultAccount,
-                      gas: 265000
+                      gas: 310000
                     }).on('transactionHash', (hash) => {
                       console.log('Trans. hash is: ', hash)
                     }).on('receipt', (receipt) => {
