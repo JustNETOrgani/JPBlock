@@ -69,6 +69,7 @@ contract JPBlock{
     // Global state variables.
     bytes32[] public openAccessPublishedWorks; // This will hold all publications to be made open access.
     address[] internal addressesOfJournals;
+    bytes32[] namesOfRegisteredJournals;
     // Public mappings.
     mapping (address => authorPool) public authorMap; //Mapping for authors. Also serves as link to Papers and Journals. 
     mapping (address => jPool) public jMap; //Mapping for authors.
@@ -117,6 +118,7 @@ contract JPBlock{
         jMap[msg.sender].pubKey = pubKey;
         jMap[msg.sender].jState = journalState.Activated;
         addressesOfJournals.push(msg.sender);
+        namesOfRegisteredJournals.push(jName);
         newJournalCreated(jName,msg.sender,jURL); // Emit event on Journal creation. 
         return true;
     }
@@ -369,8 +371,8 @@ contract JPBlock{
     
     // Getter functions begin.
     // Function to get details of all existing journals.
-    function getRegisteredJournals() public view returns (uint256,address[]){
-        return (addressesOfJournals.length,addressesOfJournals);
+    function getRegisteredJournals() public view returns (uint256,address[],bytes32[]){
+        return (addressesOfJournals.length,addressesOfJournals,namesOfRegisteredJournals);
     }
     
     // Function to get details of existing journals. 

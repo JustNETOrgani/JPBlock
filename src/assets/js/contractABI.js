@@ -2,646 +2,9 @@
 
 var ABI = [
   {
-    constant: true,
-    inputs: [
-      {
-        name: '',
-        type: 'address'
-      }
-    ],
-    name: 'jMap',
-    outputs: [
-      {
-        name: 'jName',
-        type: 'bytes32'
-      },
-      {
-        name: 'jAdd',
-        type: 'address'
-      },
-      {
-        name: 'jURL',
-        type: 'string'
-      },
-      {
-        name: 'jState',
-        type: 'uint8'
-      },
-      {
-        name: 'totalPublications',
-        type: 'uint256'
-      },
-      {
-        name: 'jImpactFactor',
-        type: 'uint8'
-      },
-      {
-        name: 'pubKey',
-        type: 'bytes32'
-      },
-      {
-        name: 'priceForOAPublication',
-        type: 'uint256'
-      },
-      {
-        name: 'priceForOtherPublication',
-        type: 'uint256'
-      },
-      {
-        name: 'subPrice',
-        type: 'uint256'
-      },
-      {
-        name: 'reputationScore',
-        type: 'uint256'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        name: '',
-        type: 'bytes32'
-      }
-    ],
-    name: 'paperMap',
-    outputs: [
-      {
-        name: 'paperTitle',
-        type: 'bytes32'
-      },
-      {
-        name: 'paperHash',
-        type: 'bytes32'
-      },
-      {
-        name: 'OAchoice',
-        type: 'uint8'
-      },
-      {
-        name: 'authorIDhashed',
-        type: 'bytes32'
-      },
-      {
-        name: 'authorsNamesHashed',
-        type: 'bytes32'
-      },
-      {
-        name: 'submittingAuthor',
-        type: 'address'
-      },
-      {
-        name: 'paperIPFShash',
-        type: 'bytes32'
-      },
-      {
-        name: 'suppleFileIPFShash',
-        type: 'bytes32'
-      },
-      {
-        name: 'paperToJAdd',
-        type: 'address'
-      },
-      {
-        name: 'journalName',
-        type: 'bytes32'
-      },
-      {
-        name: 'pState',
-        type: 'uint8'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'getAmtAccrued',
-    outputs: [
-      {
-        name: '',
-        type: 'uint256'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'countOpenAccessPublications',
-    outputs: [
-      {
-        name: '',
-        type: 'uint256'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        name: 'paperHash',
-        type: 'bytes32'
-      }
-    ],
-    name: 'pushPaperForReview',
-    outputs: [
-      {
-        name: '',
-        type: 'bool'
-      }
-    ],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        name: 'submittingAuthor',
-        type: 'address'
-      },
-      {
-        name: 'paperTitle',
-        type: 'bytes32'
-      },
-      {
-        name: 'paperHashPrv',
-        type: 'bytes32'
-      },
-      {
-        name: 'paperHashNew',
-        type: 'bytes32'
-      },
-      {
-        name: 'paperIPFSHash',
-        type: 'bytes32'
-      }
-    ],
-    name: 'createPublication',
-    outputs: [
-      {
-        name: '',
-        type: 'bool'
-      }
-    ],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'stateOfPaper',
-    outputs: [
-      {
-        name: '',
-        type: 'uint8'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        name: '',
-        type: 'bytes32'
-      }
-    ],
-    name: 'paymentStatus',
-    outputs: [
-      {
-        name: 'paperHash',
-        type: 'bytes32'
-      },
-      {
-        name: 'paidOrNot',
-        type: 'uint8'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        name: '',
-        type: 'bytes32'
-      }
-    ],
-    name: 'rpaperToIPFSlink',
-    outputs: [
-      {
-        name: 'jAdd',
-        type: 'address'
-      },
-      {
-        name: 'IPFShash',
-        type: 'bytes32'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'getOpenAccesspapers',
-    outputs: [
-      {
-        name: '',
-        type: 'bytes32[]'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        name: 'paperHash',
-        type: 'bytes32'
-      },
-      {
-        name: 'paperTitle',
-        type: 'bytes32'
-      },
-      {
-        name: 'authorsNamesHashed',
-        type: 'bytes32'
-      },
-      {
-        name: 'authorIDhashed',
-        type: 'bytes32'
-      }
-    ],
-    name: 'proveAuthorship',
-    outputs: [
-      {
-        name: '',
-        type: 'uint8'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        name: '',
-        type: 'uint256'
-      }
-    ],
-    name: 'openAccessPublishedWorks',
-    outputs: [
-      {
-        name: '',
-        type: 'bytes32'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'stateOfJournal',
-    outputs: [
-      {
-        name: '',
-        type: 'uint8'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        name: '',
-        type: 'address'
-      }
-    ],
-    name: 'authorMap',
-    outputs: [
-      {
-        name: 'authorAddress',
-        type: 'address'
-      },
-      {
-        name: 'authorNumOfPub',
-        type: 'uint256'
-      },
-      {
-        name: 'jVoteCount',
-        type: 'uint256'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        name: 'jAdd',
-        type: 'address'
-      }
-    ],
-    name: 'getAjournalDetail',
-    outputs: [
-      {
-        name: '',
-        type: 'bytes32'
-      },
-      {
-        name: '',
-        type: 'string'
-      },
-      {
-        name: '',
-        type: 'string'
-      },
-      {
-        name: '',
-        type: 'uint256'
-      },
-      {
-        name: '',
-        type: 'uint256'
-      },
-      {
-        name: '',
-        type: 'uint8'
-      },
-      {
-        name: '',
-        type: 'uint256'
-      },
-      {
-        name: '',
-        type: 'uint256'
-      },
-      {
-        name: '',
-        type: 'uint256'
-      },
-      {
-        name: '',
-        type: 'bytes32'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'getRegisteredJournals',
-    outputs: [
-      {
-        name: '',
-        type: 'uint256'
-      },
-      {
-        name: '',
-        type: 'address[]'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        name: 'paperHash',
-        type: 'bytes32'
-      },
-      {
-        name: 'jAdd',
-        type: 'address'
-      },
-      {
-        name: 'amountToPay',
-        type: 'uint256'
-      }
-    ],
-    name: 'payForPaperPublication',
-    outputs: [
-      {
-        name: '',
-        type: 'bool'
-      }
-    ],
-    payable: true,
-    stateMutability: 'payable',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        name: 'jName',
-        type: 'bytes32'
-      },
-      {
-        name: 'jURL',
-        type: 'string'
-      },
-      {
-        name: 'jIF',
-        type: 'uint8'
-      },
-      {
-        name: 'jOAcost',
-        type: 'uint256'
-      },
-      {
-        name: 'jnOAcost',
-        type: 'uint256'
-      },
-      {
-        name: 'subPrice',
-        type: 'uint256'
-      },
-      {
-        name: 'pubKey',
-        type: 'bytes32'
-      }
-    ],
-    name: 'updateJournalDetails',
-    outputs: [
-      {
-        name: '',
-        type: 'bool'
-      }
-    ],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        name: 'paperHash',
-        type: 'bytes32'
-      },
-      {
-        name: 'IPFShashOfRevNote',
-        type: 'bytes32'
-      }
-    ],
-    name: 'pushPaperForRevisionAndReSub',
-    outputs: [
-      {
-        name: '',
-        type: 'bool'
-      }
-    ],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [],
-    name: 'makeJournalInactive',
-    outputs: [
-      {
-        name: '',
-        type: 'uint8'
-      }
-    ],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
     constant: false,
     inputs: [],
     name: 'activateJournal',
-    outputs: [
-      {
-        name: '',
-        type: 'bool'
-      }
-    ],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        name: '',
-        type: 'address'
-      }
-    ],
-    name: 'paidUserForPaper',
-    outputs: [
-      {
-        name: 'requester',
-        type: 'address'
-      },
-      {
-        name: 'voteCount',
-        type: 'uint256'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        name: 'paperIPFSHash',
-        type: 'bytes32'
-      },
-      {
-        name: 'userPUbKey',
-        type: 'bytes32'
-      },
-      {
-        name: 'amountToPay',
-        type: 'uint256'
-      }
-    ],
-    name: 'payToGetRestrictedPaper',
-    outputs: [
-      {
-        name: '',
-        type: 'bool'
-      }
-    ],
-    payable: true,
-    stateMutability: 'payable',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        name: 'jAdd',
-        type: 'address'
-      }
-    ],
-    name: 'voteUpJreputation',
-    outputs: [
-      {
-        name: '',
-        type: 'bool'
-      }
-    ],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        name: 'paperHash',
-        type: 'bytes32'
-      },
-      {
-        name: 'ipfsHashOfRejReason',
-        type: 'bytes32'
-      }
-    ],
-    name: 'pushPaperForRejection',
     outputs: [
       {
         name: '',
@@ -696,14 +59,44 @@ var ABI = [
     type: 'function'
   },
   {
-    constant: true,
+    constant: false,
     inputs: [
       {
-        name: 'paperHash',
+        name: 'submittingAuthor',
+        type: 'address'
+      },
+      {
+        name: 'paperTitle',
+        type: 'bytes32'
+      },
+      {
+        name: 'paperHashPrv',
+        type: 'bytes32'
+      },
+      {
+        name: 'paperHashNew',
+        type: 'bytes32'
+      },
+      {
+        name: 'paperIPFSHash',
         type: 'bytes32'
       }
     ],
-    name: 'authorPublicationChoice',
+    name: 'createPublication',
+    outputs: [
+      {
+        name: '',
+        type: 'bool'
+      }
+    ],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    constant: false,
+    inputs: [],
+    name: 'makeJournalInactive',
     outputs: [
       {
         name: '',
@@ -711,7 +104,61 @@ var ABI = [
       }
     ],
     payable: false,
-    stateMutability: 'view',
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        name: 'paperHash',
+        type: 'bytes32'
+      },
+      {
+        name: 'jAdd',
+        type: 'address'
+      },
+      {
+        name: 'amountToPay',
+        type: 'uint256'
+      }
+    ],
+    name: 'payForPaperPublication',
+    outputs: [
+      {
+        name: '',
+        type: 'bool'
+      }
+    ],
+    payable: true,
+    stateMutability: 'payable',
+    type: 'function'
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        name: 'paperIPFSHash',
+        type: 'bytes32'
+      },
+      {
+        name: 'userPUbKey',
+        type: 'bytes32'
+      },
+      {
+        name: 'amountToPay',
+        type: 'uint256'
+      }
+    ],
+    name: 'payToGetRestrictedPaper',
+    outputs: [
+      {
+        name: '',
+        type: 'bool'
+      }
+    ],
+    payable: true,
+    stateMutability: 'payable',
     type: 'function'
   },
   {
@@ -723,6 +170,94 @@ var ABI = [
       }
     ],
     name: 'pushPaperForAcceptance',
+    outputs: [
+      {
+        name: '',
+        type: 'bool'
+      }
+    ],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        name: 'paperHash',
+        type: 'bytes32'
+      },
+      {
+        name: 'ipfsHashOfRejReason',
+        type: 'bytes32'
+      }
+    ],
+    name: 'pushPaperForRejection',
+    outputs: [
+      {
+        name: '',
+        type: 'bool'
+      }
+    ],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        name: 'paperHash',
+        type: 'bytes32'
+      }
+    ],
+    name: 'pushPaperForReview',
+    outputs: [
+      {
+        name: '',
+        type: 'bool'
+      }
+    ],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        name: 'paperHash',
+        type: 'bytes32'
+      },
+      {
+        name: 'IPFShashOfRevNote',
+        type: 'bytes32'
+      }
+    ],
+    name: 'pushPaperForRevisionAndReSub',
+    outputs: [
+      {
+        name: '',
+        type: 'bool'
+      }
+    ],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        name: 'paperIPFSHash',
+        type: 'bytes32'
+      },
+      {
+        name: 'perUserIPFSencryptedLink',
+        type: 'bytes32'
+      }
+    ],
+    name: 'sendToPaidUser',
     outputs: [
       {
         name: '',
@@ -793,57 +328,38 @@ var ABI = [
     type: 'function'
   },
   {
-    constant: true,
-    inputs: [
-      {
-        name: 'authorAddress',
-        type: 'address'
-      }
-    ],
-    name: 'retrieveAuthorWorks',
-    outputs: [
-      {
-        name: '',
-        type: 'uint256'
-      },
-      {
-        name: '',
-        type: 'bytes32[]'
-      },
-      {
-        name: '',
-        type: 'bytes32[]'
-      },
-      {
-        name: '',
-        type: 'uint256'
-      },
-      {
-        name: '',
-        type: 'bytes32[]'
-      },
-      {
-        name: '',
-        type: 'bytes32[]'
-      }
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
     constant: false,
     inputs: [
       {
-        name: 'paperIPFSHash',
+        name: 'jName',
         type: 'bytes32'
       },
       {
-        name: 'perUserIPFSencryptedLink',
+        name: 'jURL',
+        type: 'string'
+      },
+      {
+        name: 'jIF',
+        type: 'uint8'
+      },
+      {
+        name: 'jOAcost',
+        type: 'uint256'
+      },
+      {
+        name: 'jnOAcost',
+        type: 'uint256'
+      },
+      {
+        name: 'subPrice',
+        type: 'uint256'
+      },
+      {
+        name: 'pubKey',
         type: 'bytes32'
       }
     ],
-    name: 'sendToPaidUser',
+    name: 'updateJournalDetails',
     outputs: [
       {
         name: '',
@@ -855,30 +371,22 @@ var ABI = [
     type: 'function'
   },
   {
-    constant: true,
+    constant: false,
     inputs: [
       {
-        name: 'paperHash',
-        type: 'bytes32'
-      },
-      {
-        name: 'authorsNamesHashed',
-        type: 'bytes32'
+        name: 'jAdd',
+        type: 'address'
       }
     ],
-    name: 'checkPaperStatus',
+    name: 'voteUpJreputation',
     outputs: [
       {
         name: '',
-        type: 'string'
-      },
-      {
-        name: '',
-        type: 'bytes32'
+        type: 'bool'
       }
     ],
     payable: false,
-    stateMutability: 'view',
+    stateMutability: 'nonpayable',
     type: 'function'
   },
   {
@@ -1160,10 +668,506 @@ var ABI = [
     ],
     name: 'rejectionNotice',
     type: 'event'
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        name: '',
+        type: 'address'
+      }
+    ],
+    name: 'authorMap',
+    outputs: [
+      {
+        name: 'authorAddress',
+        type: 'address'
+      },
+      {
+        name: 'authorNumOfPub',
+        type: 'uint256'
+      },
+      {
+        name: 'jVoteCount',
+        type: 'uint256'
+      }
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        name: 'paperHash',
+        type: 'bytes32'
+      }
+    ],
+    name: 'authorPublicationChoice',
+    outputs: [
+      {
+        name: '',
+        type: 'uint8'
+      }
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        name: 'paperHash',
+        type: 'bytes32'
+      },
+      {
+        name: 'authorsNamesHashed',
+        type: 'bytes32'
+      }
+    ],
+    name: 'checkPaperStatus',
+    outputs: [
+      {
+        name: '',
+        type: 'string'
+      },
+      {
+        name: '',
+        type: 'bytes32'
+      }
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: 'countOpenAccessPublications',
+    outputs: [
+      {
+        name: '',
+        type: 'uint256'
+      }
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        name: 'jAdd',
+        type: 'address'
+      }
+    ],
+    name: 'getAjournalDetail',
+    outputs: [
+      {
+        name: '',
+        type: 'bytes32'
+      },
+      {
+        name: '',
+        type: 'string'
+      },
+      {
+        name: '',
+        type: 'string'
+      },
+      {
+        name: '',
+        type: 'uint256'
+      },
+      {
+        name: '',
+        type: 'uint256'
+      },
+      {
+        name: '',
+        type: 'uint8'
+      },
+      {
+        name: '',
+        type: 'uint256'
+      },
+      {
+        name: '',
+        type: 'uint256'
+      },
+      {
+        name: '',
+        type: 'uint256'
+      },
+      {
+        name: '',
+        type: 'bytes32'
+      }
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: 'getAmtAccrued',
+    outputs: [
+      {
+        name: '',
+        type: 'uint256'
+      }
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: 'getOpenAccesspapers',
+    outputs: [
+      {
+        name: '',
+        type: 'bytes32[]'
+      }
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: 'getRegisteredJournals',
+    outputs: [
+      {
+        name: '',
+        type: 'uint256'
+      },
+      {
+        name: '',
+        type: 'address[]'
+      },
+      {
+        name: '',
+        type: 'bytes32[]'
+      }
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        name: '',
+        type: 'address'
+      }
+    ],
+    name: 'jMap',
+    outputs: [
+      {
+        name: 'jName',
+        type: 'bytes32'
+      },
+      {
+        name: 'jAdd',
+        type: 'address'
+      },
+      {
+        name: 'jURL',
+        type: 'string'
+      },
+      {
+        name: 'jState',
+        type: 'uint8'
+      },
+      {
+        name: 'totalPublications',
+        type: 'uint256'
+      },
+      {
+        name: 'jImpactFactor',
+        type: 'uint8'
+      },
+      {
+        name: 'pubKey',
+        type: 'bytes32'
+      },
+      {
+        name: 'priceForOAPublication',
+        type: 'uint256'
+      },
+      {
+        name: 'priceForOtherPublication',
+        type: 'uint256'
+      },
+      {
+        name: 'subPrice',
+        type: 'uint256'
+      },
+      {
+        name: 'reputationScore',
+        type: 'uint256'
+      }
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        name: '',
+        type: 'uint256'
+      }
+    ],
+    name: 'openAccessPublishedWorks',
+    outputs: [
+      {
+        name: '',
+        type: 'bytes32'
+      }
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        name: '',
+        type: 'address'
+      }
+    ],
+    name: 'paidUserForPaper',
+    outputs: [
+      {
+        name: 'requester',
+        type: 'address'
+      },
+      {
+        name: 'voteCount',
+        type: 'uint256'
+      }
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        name: '',
+        type: 'bytes32'
+      }
+    ],
+    name: 'paperMap',
+    outputs: [
+      {
+        name: 'paperTitle',
+        type: 'bytes32'
+      },
+      {
+        name: 'paperHash',
+        type: 'bytes32'
+      },
+      {
+        name: 'OAchoice',
+        type: 'uint8'
+      },
+      {
+        name: 'authorIDhashed',
+        type: 'bytes32'
+      },
+      {
+        name: 'authorsNamesHashed',
+        type: 'bytes32'
+      },
+      {
+        name: 'submittingAuthor',
+        type: 'address'
+      },
+      {
+        name: 'paperIPFShash',
+        type: 'bytes32'
+      },
+      {
+        name: 'suppleFileIPFShash',
+        type: 'bytes32'
+      },
+      {
+        name: 'paperToJAdd',
+        type: 'address'
+      },
+      {
+        name: 'journalName',
+        type: 'bytes32'
+      },
+      {
+        name: 'pState',
+        type: 'uint8'
+      }
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        name: '',
+        type: 'bytes32'
+      }
+    ],
+    name: 'paymentStatus',
+    outputs: [
+      {
+        name: 'paperHash',
+        type: 'bytes32'
+      },
+      {
+        name: 'paidOrNot',
+        type: 'uint8'
+      }
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        name: 'paperHash',
+        type: 'bytes32'
+      },
+      {
+        name: 'paperTitle',
+        type: 'bytes32'
+      },
+      {
+        name: 'authorsNamesHashed',
+        type: 'bytes32'
+      },
+      {
+        name: 'authorIDhashed',
+        type: 'bytes32'
+      }
+    ],
+    name: 'proveAuthorship',
+    outputs: [
+      {
+        name: '',
+        type: 'uint8'
+      }
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        name: 'authorAddress',
+        type: 'address'
+      }
+    ],
+    name: 'retrieveAuthorWorks',
+    outputs: [
+      {
+        name: '',
+        type: 'uint256'
+      },
+      {
+        name: '',
+        type: 'bytes32[]'
+      },
+      {
+        name: '',
+        type: 'bytes32[]'
+      },
+      {
+        name: '',
+        type: 'uint256'
+      },
+      {
+        name: '',
+        type: 'bytes32[]'
+      },
+      {
+        name: '',
+        type: 'bytes32[]'
+      }
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        name: '',
+        type: 'bytes32'
+      }
+    ],
+    name: 'rpaperToIPFSlink',
+    outputs: [
+      {
+        name: 'jAdd',
+        type: 'address'
+      },
+      {
+        name: 'IPFShash',
+        type: 'bytes32'
+      }
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: 'stateOfJournal',
+    outputs: [
+      {
+        name: '',
+        type: 'uint8'
+      }
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: 'stateOfPaper',
+    outputs: [
+      {
+        name: '',
+        type: 'uint8'
+      }
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function'
   }
 ]
 
-var contractAddress = '0x8c8bF18b02E252a947CB19f96020C68DA34CC1b5'
+var contractAddress = '0x17B097494c571499C83e5D15405295C07FFe30b0'
 
 var suppliedGas = 6700000
 
