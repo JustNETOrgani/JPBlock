@@ -1,15 +1,13 @@
-import 'crypto-js'
-import aes from 'crypto-js/aes'
+// import 'crypto-js'
+import CryptoJS from 'crypto-js'
 
-function symEncrypt (data, key) {
-  var ciphertext = aes.encrypt(JSON.stringify(data), key).toString()
+export async function symEncrypt (data, key) {
+  var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(data), key).toString()
   return ciphertext
 }
 
-function symDecrypt (encData, key) {
-  var bytes = aes.decrypt(encData, key)
+export async function symDecrypt (encData, key) {
+  var bytes = CryptoJS.AES.decrypt(encData, key)
   // var decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
   return bytes
 }
-
-export default { symEncrypt, symDecrypt }

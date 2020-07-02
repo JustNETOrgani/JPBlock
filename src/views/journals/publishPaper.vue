@@ -20,10 +20,20 @@
                                 <el-col :span="20" :offset="3">
                                     <fieldset>
                                         <legend>File upload</legend>
+                                        <p id="instructionText"><b>Instruction:</b><i> Please, enter the hash of the original paper before uploading the final paper to be published.</i></p>
                                     <el-col :span="11" :offset="0">
-                                        <el-form-item label="Hash of original Paper" prop="origPaperHash">
-                                            <el-input v-model="jPaperPubForm.origPaperHash" placeholder="Please enter hash of the original paper."></el-input>
-                                        </el-form-item>
+                                        <el-button type="text" @click="origManuHashDialog = true">**Click here to enter Hash of original paper**</el-button>
+                                        <el-dialog title="Information required" :visible.sync="origManuHashDialog" width="40%">
+                                            <el-form :model="origPaperHashForm" :rules="rules" ref="origPaperHashForm">
+                                                <el-form-item label="Hash of original paper" label-width="50" prop="origManuPaperHash">
+                                                <el-input v-model="origPaperHashForm.origManuPaperHash" autocomplete="off"></el-input>
+                                                </el-form-item>
+                                            </el-form>
+                                            <span slot="footer" class="dialog-footer">
+                                                <el-button @click="origManuHashDialog = false">Cancel</el-button>
+                                                <el-button type="primary" @click="getOrigManuHash('origPaperHashForm')">Confirm</el-button>
+                                            </span>
+                                            </el-dialog>
                                     </el-col>
                                             <el-col :span="11" :offset="0">
                                                 <el-form-item label="Final paper to publish" prop="finalPubPaper">
@@ -58,7 +68,7 @@
                                             <el-row>
                                                 <el-col :span="11" :offset="0">
                                                     <el-form-item label="Eth Address of author" prop="subAuthEthAddress">
-                                                        <el-input clearable v-model="jPaperPubForm.subAuthEthAddress" placeholder="Multiple authors:Separate with ,"></el-input>
+                                                        <el-input clearable v-model="jPaperPubForm.subAuthEthAddress" placeholder="Input Eth address of submitting author."></el-input>
                                                     </el-form-item>
                                                 </el-col>
                                                 <el-col :span="11" :offset="0">
@@ -112,24 +122,26 @@
 import web3 from '@/assets/js/web3'
 // import Web3 from 'web3'
 import getHash from '@/assets/js/hashFunc'
-import symEncrypt from '@/assets/js/symEncryptAndDec'
+import { symEncrypt } from '@/assets/js/symEncryptAndDec'
 import { ABI, contractAddress, suppliedGas } from '@/assets/js/contractABI'
 import convertIPFSstringToBytes from '@/assets/js/convertIPFShash.js'
+// const CryptoJs = new window.CrytoJs()
 const ipfs = new window.Ipfs()
 // Or import web3 <script> at index page and set the provider you want from Web3.providers as below.
 // const web3 = new window.Web3(new window.Web3.providers.HttpProvider('http://localhost:8545')) // This node address should be same for Ganache.
-
+// console.log('Crypto Js: ', CryptoJs)
 export default {
   name: 'authorSubmit',
   data () {
     return {
       jPaperPubForm: {
-        origPaperHash: '',
         finalPubPaper: '',
         subAuthEthAddress: '',
         paperTitle: '',
         authCheckBox: ''
       },
+      origPaperHashForm: { origManuPaperHash: '' },
+      origPaperHash: '',
       authorPubKey: '',
       // Dynamic variables.
       journals: [],
@@ -139,17 +151,15 @@ export default {
       accountNumForm: { accountNum: '' },
       accountIndexEntered: '',
       loadingData: false,
+      origManuHashDialog: false,
       journalPubSubBtnLoadState: false,
       accountDialog: false,
       getAccountLoadState: false,
       buffer: '',
       rules: {
-        origPaperHash: [
+        origManuPaperHash: [
           { required: true, message: 'Please enter the hash of the original paper.', trigger: 'blur' },
           { min: 64, message: 'Length should be at least 64', trigger: 'blur' }
-        ],
-        finalPubPaper: [
-          { required: true, message: 'Please upload final file', trigger: 'blur' }
         ],
         subAuthEthAddress: [
           { required: true, message: 'Please input Eth address of submitting author', trigger: 'blur' },
@@ -183,15 +193,6 @@ export default {
         })
       }
     })
-    this.loadingAuthorSubPage = true
-    // To be improved by calling Smart Contract to fetch list of registered journals.
-    const jObj = []
-    const journalList = ['IEEEAccess', 'Future System', 'Ledger', 'Sensors']
-    for (let i = 0; i < journalList.length; i++) {
-      jObj[i] = { id: i, name: journalList[i] }
-    }
-    this.journals = jObj
-    this.loadingAuthorSubPage = false
     // Open the account dialog box.
     this.accountDialog = true
   },
@@ -231,13 +232,13 @@ export default {
           if (valid) {
             // get input data and continue.
             var data = {
-              origPaperHash: this.jPaperPubForm.origPaperHash,
+              origPaperHash: this.origPaperHash,
               hashOfFinalFile: this.hashOfFinalPaper,
               ipfsHashOfFinalFile: this.IPFSHashOfFinalPaper,
               paperTitle: this.jPaperPubForm.paperTitle,
               subAuthEthAddress: this.jPaperPubForm.subAuthEthAddress,
               oaChoice: this.openAccessChoiceOfAuthor,
-              chkBox: this.authorSubForm.authCheckBox
+              chkBox: this.jPaperPubForm.authCheckBox
             }
             // Set submit loading state to true.
             this.journalPubSubBtnLoadState = true
@@ -332,7 +333,7 @@ export default {
       })
     },
     beforeUpload (item) {
-      if (this.hashInputValidation(this.jPaperPubForm.origPaperHash) === 1) {
+      if (this.hashInputValidation(this.origPaperHash) === 1) {
         const file = item.file
         console.log('File action:', item.action)
         const extensionDoc = file.name.split('.').pop() === 'doc'
@@ -355,17 +356,18 @@ export default {
             this.hashOfFinalPaper = res
             // Check OpenAccess choice based on the orignal paper's hash entered.
             var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
-            console.log('Contract instance created.')
+            console.log('Contract instance for access type retrieval created.')
             this.loadingData = true
             // Smart contract and other logic continues.
             jpBlockContract.methods.authorPublicationChoice(this.origPaperHash).call({ from: web3.eth.defaultAccount }).then(res => {
               this.openAccessChoiceOfAuthor = res
-              if (res === 1) {
+              console.log('Author OA choice: ', res)
+              if (res === '1') { // Remember to change this to '1'
               // Open access hence no encryption. Send to IPFS.
                 this.fileExtractor(file)
               } else {
               // Restricted hence encrypt and send to IPFS.
-                this.manuscriptFileExtractor(file)
+                this.resManuscriptFileExtractor(file)
               }
             }).catch((error) => {
               console.log('Error occurred.', error)
@@ -380,38 +382,44 @@ export default {
         })
       }
     },
-    manuscriptFileExtractor (file) {
-      // console.log('Inside manuscript file extractor.')
+    resManuscriptFileExtractor (file) {
+      // console.log('Inside restricted manuscript file extractor.')
       var exAndEncrptReader = new FileReader()
       exAndEncrptReader.readAsText(file)
       exAndEncrptReader.onload = this.finalFileLoaded
     },
     fileExtractor (file) {
-      // console.log('Inside manuscript file extractor.')
+      // console.log('Inside file extractor.')
       var rawReader = new FileReader()
       rawReader.readAsText(file)
       rawReader.onload = this.finalFileRawPush
     },
     async finalFileRawPush (evt) {
-      // console.log('Inside manuLoaded aync function.')
+      // console.log('Inside finalFile raw push aync function.')
       var fileString = evt.target.result
       // console.log('Encryption done.')
       // console.log('Encrypted manuscript data is: ', encryptedData)
       this.pushRawToIPFShub(fileString)
     },
     async finalFileLoaded (evt) {
-      // console.log('Inside manuLoaded aync function.')
+      // console.log('Inside finalFileLoaded aync function.')
       var fileString = evt.target.result
       // console.log('filestring done.', fileString)
-      this.$prompt('Please input encryption key.', 'Information required', {
+      this.$prompt('Restricted paper. Please input encryption key.', 'Information required', {
         confirmButtonText: 'Continue',
         cancelButtonText: 'Cancel',
         inputPlaceholder: 'Enter encryption key for the journal.'
       }).then(({ value }) => {
-        var encryptedData = symEncrypt(fileString, value)
-        // console.log('Encryption done.')
-        // console.log('Encrypted manuscript data is: ', encryptedData)
-        this.pushToIPFShub(encryptedData)
+        symEncrypt(fileString, value).then(encryptedData => {
+          console.log('Encryption done.')
+          // console.log('Encrypted manuscript data is: ', encryptedData)
+          this.pushToIPFShub(encryptedData)
+        }).catch((error) => {
+          this.loadingData = false
+          this.$message.error('Error encrypting data. Please, try again..')
+          console.log('Error with encryption:', error)
+        }
+        )
       })
     },
     pushToIPFShub (encryptedData) {
@@ -424,6 +432,8 @@ export default {
         // console.log('Response object from IPFS: ', res)
         // console.log('Returned hash: ', res[0].hash)
         console.log('Data upload to IPFS sucessful')
+        this.loadingData = false
+        this.$message('File upload success.')
         this.IPFSHashOfFinalPaper = res[0].hash
       })
     },
@@ -435,6 +445,8 @@ export default {
         // console.log('Response object from IPFS: ', res)
         // console.log('Returned hash: ', res[0].hash)
         console.log('Data upload to IPFS sucessful')
+        this.loadingData = false
+        this.$message('File upload success.')
         this.IPFSHashOfFinalPaper = res[0].hash
       })
     },
@@ -452,6 +464,18 @@ export default {
         convertedBytes += bytes[i].toString(16)
       }
       return '0x' + convertedBytes
+    },
+    getOrigManuHash (formName) {
+      if (this.accountIndexEntered.length !== 0) {
+        this.$refs[formName].validate(valid => {
+          if (valid) {
+            this.origPaperHash = this.origPaperHashForm.origManuPaperHash
+            console.log('Orig. Hash is: ', this.origPaperHash)
+            this.origManuHashDialog = false
+            this.$message('Hash captured.')
+          }
+        })
+      }
     },
     handleRemove (file, fileList) {
       console.log(file, fileList)
@@ -510,6 +534,10 @@ legend {
 
 .hashValues{
     font-size: 0.7rem;
+}
+
+#instructionText{
+    font-size: 0.8rem;
 }
 
 .hashValuesForIPFS{
