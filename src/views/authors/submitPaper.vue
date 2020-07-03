@@ -268,15 +268,28 @@ export default {
         console.log('Contract instance for access type retrieval created.')
         // Smart contract and other logic continues.
         jpBlockContract.methods.getRegisteredJournals().call({ from: web3.eth.defaultAccount }).then(journalList => {
-          for (let i = 0; i < journalList[2].length; i++) {
-            jObj[i] = { id: i, name: (web3.utils.hexToAscii(journalList[2][i])).replace(/[^a-z]/gi, '') }
+          if (journalList[2].length >= 1) {
+            for (let i = 0; i < journalList[2].length; i++) {
+              jObj[i] = { id: i, name: (web3.utils.hexToAscii(journalList[2][i])).replace(/[^a-z]/gi, '') }
             // [^a-z] matches every alphabet and 'i' flag makes it case insensitive.
             // `g` flag checks for multiple instances.
+            }
+            this.journals = jObj
+            this.loadingData = false
+            // Open the account dialog box.
+            this.accountDialog = true
+          } else {
+            this.$alert('Sorry! No registered journals exist on JPBlock at the moment. Please try again later.', 'Alert!', {
+              confirmButtonText: 'OK',
+              callback: action => {
+                this.$message({
+                  type: 'info',
+                  message: `action: ${action}`
+                })
+                this.$router.push('/')
+              }
+            })
           }
-          this.journals = jObj
-          this.loadingData = false
-          // Open the account dialog box.
-          this.accountDialog = true
         }).catch((error) => {
           console.log('Error occurred.', error)
           this.getAccBalLoadBtn = false
