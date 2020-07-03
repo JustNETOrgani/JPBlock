@@ -48,7 +48,7 @@ const routes = [
   },
   {
     path: '/journals/jDashboard',
-    name: 'publishPaper',
+    name: 'jsDashboard',
     component: () => import('@/views/journals/jDashboard.vue')
   },
   // Author routes.
