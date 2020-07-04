@@ -83,7 +83,7 @@
                         </div>
                         <el-col :span="20" :offset="3">
                         <el-row>
-                            <el-form-item label="**Author consent**" prop="authCheckBox">
+                            <el-form-item label="**Journal's consent**" prop="authCheckBox">
                                 <el-col :span="16" :offset="2">
                                     <el-checkbox v-model="jPaperPubForm.authCheckBox">I have checked the authenticity of the above provided details.</el-checkbox>
                                 </el-col>
