@@ -8,6 +8,6 @@ export async function symEncrypt (data, key) {
 
 export async function symDecrypt (encData, key) {
   var bytes = CryptoJS.AES.decrypt(encData, key)
-  // var decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-  return bytes
+  var decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
+  return decryptedData
 }
