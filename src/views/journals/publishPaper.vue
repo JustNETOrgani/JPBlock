@@ -423,10 +423,10 @@ export default {
       })
     },
     pushToIPFShub (encryptedData) {
-      var encryptedDataToSendToJviaIPFS = JSON.stringify({ encryptedData })
+      // var encryptedDataToSendToJviaIPFS = JSON.stringify({ encryptedData })
       // console.log('Connecting to IPFS.')
       const MyBuffer = window.Ipfs.Buffer
-      var dataToBuffer = MyBuffer.from(encryptedDataToSendToJviaIPFS)
+      var dataToBuffer = MyBuffer.from(encryptedData)
       // console.log('Buffer conversion done.')
       ipfs.add(dataToBuffer).then(res => {
         // console.log('Response object from IPFS: ', res)
