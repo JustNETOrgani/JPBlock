@@ -500,40 +500,7 @@ export default {
                       // var jPubKey = journalKeyPair.publicKey
                       var encryptedUserData = asymmEncrypt(jPrvKey, decryptedBytes, userPubKey)
                       // Push to IPFS.
-                      this.pushToIPFShub(encryptedUserData).then(ipfsHash => {
-                        // Perform conversions.
-                        var convIPFShashOfUserReqMet = convertIPFSstringToBytes(ipfsHash)
-                        var convIPFShashUserRequsted = convertIPFSstringToBytes(this.jSendPaperToUserForm.ipfsHashOfRequestedPaper)
-                        // Send as transaction to the smart contract.
-                        var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
-                        console.log('Contract instance created.')
-                        try {
-                          jpBlockContract.methods.sendToPaidUser(convIPFShashUserRequsted, convIPFShashOfUserReqMet).send({
-                            from: web3.eth.defaultAccount,
-                            gas: 450000 // Check gas issues.
-                          }).on('transactionHash', (hash) => {
-                            console.log('Trans. hash is: ', hash)
-                          }).on('receipt', (receipt) => {
-                            console.log('Trans. Block Number is: ', receipt.blockNumber)
-                            // Set submit loading state to false.
-                            this.getRequestedLoadState = false
-                            this.$message({
-                              message: 'Paper successfully sent to user.',
-                              type: 'success'
-                            })
-                            this.captureSendPaperToUserDialog = false
-                          }).on('error', (error) => {
-                            console.log('Error occured.', error)
-                            this.getRequestedLoadState = false
-                            this.$message.error('Sorry! Transaction error. Please, try again later.')
-                            // window.location.reload()
-                          })
-                        } catch {
-                          console.log('Sorry! Error occured.')
-                          this.getRequestedLoadState = false
-                          this.$message.error('Sorry! Non-transactional. Please try again later.')
-                        }
-                      })
+                      this.pushToIPFShub(encryptedUserData)
                     })
                   } else {
                     console.log('Sorry! Data Decryption error.')
@@ -543,7 +510,7 @@ export default {
                 }).catch((err) => {
                   this.getRequestedLoadState = false
                   console.log('Error with', err)
-                  this.$message.error('Error getting data from IPFS.')
+                  this.$message.error('Error decrypting data.')
                 })
               })
             }).catch((err) => {
@@ -574,8 +541,44 @@ export default {
         // console.log('Response object from IPFS: ', res)
         // console.log('Returned hash: ', res[0].hash)
         console.log('Data upload to IPFS sucessful')
-        return res[0].hash
+        // Send to the user.
+        this.sendToUserviaScontract(res[0].hash)
       })
+    },
+    sendToUserviaScontract (ipfsHash) {
+      console.log('IPFS hash is: ', ipfsHash)
+      // Perform conversions.
+      var convIPFShashOfUserReqMet = convertIPFSstringToBytes(ipfsHash)
+      var convIPFShashUserRequsted = convertIPFSstringToBytes(this.jSendPaperToUserForm.ipfsHashOfRequestedPaper)
+      // Send as transaction to the smart contract.
+      var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
+      console.log('Contract instance created.')
+      try {
+        jpBlockContract.methods.sendToPaidUser(convIPFShashUserRequsted, convIPFShashOfUserReqMet).send({
+          from: web3.eth.defaultAccount,
+          gas: 450000 // Check gas issues.
+        }).on('transactionHash', (hash) => {
+          console.log('Trans. hash is: ', hash)
+        }).on('receipt', (receipt) => {
+          console.log('Trans. Block Number is: ', receipt.blockNumber)
+          // Set submit loading state to false.
+          this.getRequestedLoadState = false
+          this.$message({
+            message: 'Paper successfully sent to user.',
+            type: 'success'
+          })
+          this.captureSendPaperToUserDialog = false
+        }).on('error', (error) => {
+          console.log('Error occured.', error)
+          this.getRequestedLoadState = false
+          this.$message.error('Sorry! Transaction error. Please, try again later.')
+          // window.location.reload()
+        })
+      } catch {
+        console.log('Sorry! Error occured.')
+        this.getRequestedLoadState = false
+        this.$message.error('Sorry! Non-transactional. Please try again later.')
+      }
     }
   }
 }
