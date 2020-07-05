@@ -2,7 +2,7 @@
 import CryptoJS from 'crypto-js'
 
 export async function symEncrypt (data, key) {
-  var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(data), key).toString()
+  var ciphertext = CryptoJS.AES.encrypt(JSON.stringify({ data }), key).toString()
   return ciphertext
 }
 
