@@ -4,7 +4,7 @@
           <el-link icon="el-icon-arrow-left" style="font-size:17px;float:left;" @click="backToPrvPack">Previous Page</el-link>
         </div>
         <div class="formArea">
-            <h2>Journal paper review and acceptance</h2>
+            <h2>Journal paper resubmission and rejection</h2>
             <el-row>
                 <el-col :span="22">
                     <div class="grid-content bg-purple-dark">
@@ -107,9 +107,6 @@ export default {
         ],
         authCheckBox: [
           { required: true, message: 'Please check the checkbox.', trigger: 'blur' }
-        ],
-        taskReason: [
-          { required: true, message: 'Please select the required task from the list.', trigger: 'blur' }
         ]
       }
     }
