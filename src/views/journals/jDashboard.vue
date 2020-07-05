@@ -48,7 +48,7 @@
                 <el-table
                 :data="pageTableData"
                 style="width: 100%"
-                height="450px"
+                height="550px"
                 >
                 <!--Building table body-->
                 <template v-for="(item, index) in receivedPaperstableLabel">
@@ -64,7 +64,7 @@
                 <el-table
                 :data="pageTableData"
                 style="width: 100%"
-                height="450px"
+                height="550px"
                 >
                 <!--Building table body-->
                 <template v-for="(item, index) in revisedPaperstableLabel">
@@ -80,7 +80,7 @@
                 <el-table
                 :data="pageTableData"
                 style="width: 100%"
-                height="450px"
+                height="550px"
                 >
                 <!--Building table body-->
                 <template v-for="(item, index) in paidPaperstableLabel">
@@ -96,7 +96,7 @@
                 <el-table
                 :data="reqPageTableData"
                 style="width: 100%"
-                height="450px"
+                height="550px"
                 >
                 <!--Building table body-->
                 <template v-for="(item, index) in reqPaperstableLabel">
