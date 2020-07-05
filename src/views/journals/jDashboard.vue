@@ -205,7 +205,7 @@ export default {
         { label: 'IPFS hash of Suppl. paper', prop: 'suppleFileIPFShash' }
       ],
       revisedPaperstableLabel: [
-        { label: 'Hash of the original paper', prop: 'origPaperHash', width: '320px' },
+        { label: 'Hash of the original paper', prop: 'origPaperHash', width: '560px' },
         { label: 'Hash of the revised paper', prop: 'newPaperHash' }
       ],
       paidPaperstableLabel: [
