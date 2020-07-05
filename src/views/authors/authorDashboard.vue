@@ -29,7 +29,7 @@
                               <el-option label="Papers to revise" value="papersToRevise"></el-option>
                               <el-option label="Rejected papers" value="rejectedPapers"></el-option>
                               <el-option label="Received paid papers" value="recPaidPapers"></el-option>
-                              <el-option label="Published restricted papers" value="publishedRestrictedPaper"></el-option>
+                              <el-option label="Published restricted papers" value="publishedRestrictedPapers"></el-option>
                           </el-select>
                       </el-form-item>
                     </el-form>
@@ -45,14 +45,14 @@
         <el-row>
           <el-col :span="24" :offset="0">
             <h4>Retrieved data appears below</h4>
-            <div v-if="receivedSub" v-loading="receivedSubLoading">
+            <div v-if="submittedPapers" v-loading="submittedPapersSubLoading">
                 <el-table
                 :data="pageTableData"
                 style="width: 100%"
                 height="550px"
                 >
                 <!--Building table body-->
-                <template v-for="(item, index) in receivedPaperstableLabel">
+                <template v-for="(item, index) in submittedPaperstableLabel">
                   <el-table-column
                     :key="index"
                     :prop="item.prop"
@@ -61,14 +61,14 @@
                 </template>
               </el-table>
             </div>
-            <div v-else-if="revisedSub" v-loading="revSubLoading">
+            <div v-else-if="acceptedPapers" v-loading="acceptedPapersSubLoading">
                 <el-table
                 :data="pageTableData"
                 style="width: 100%"
                 height="550px"
                 >
                 <!--Building table body-->
-                <template v-for="(item, index) in revisedPaperstableLabel">
+                <template v-for="(item, index) in acceptedPaperstableLabel">
                   <el-table-column
                     :key="index"
                     :prop="item.prop"
@@ -77,14 +77,14 @@
                 </template>
               </el-table>
             </div>
-            <div v-else-if="paidPapers" v-loading="paidPapersbLoading">
+            <div v-else-if="papersToRevise" v-loading="papersToRevisebLoading">
                 <el-table
                 :data="pageTableData"
                 style="width: 100%"
                 height="550px"
                 >
                 <!--Building table body-->
-                <template v-for="(item, index) in paidPaperstableLabel">
+                <template v-for="(item, index) in papersToRevisetableLabel">
                   <el-table-column
                     :key="index"
                     :prop="item.prop"
@@ -93,14 +93,14 @@
                 </template>
               </el-table>
             </div>
-            <div v-else-if="reqPaper" v-loading="reqPapersLoading">
+            <div v-else-if="rejectedPapers" v-loading="rejectedPapersLoading">
                 <el-table
-                :data="reqPageTableData"
+                :data="pageTableData"
                 style="width: 100%"
                 height="550px"
                 >
                 <!--Building table body-->
-                <template v-for="(item, index) in reqPaperstableLabel">
+                <template v-for="(item, index) in rejectedPaperstableLabel">
                   <el-table-column
                     :key="index"
                     :prop="item.prop"
@@ -109,36 +109,41 @@
                 </template>
               </el-table>
             </div>
-            <div v-else-if="sendPaperToUser" v-loading="sendPaperLoading">
-                <p>Sending paper to user initated...</p>
+            <div v-else-if="recPaidPapers" v-loading="recPaidPapersLoading">
+                <el-table
+                :data="pageTableData"
+                style="width: 100%"
+                height="550px"
+                >
+                <!--Building table body-->
+                <template v-for="(item, index) in recPaidPaperstableLabel">
+                  <el-table-column
+                    :key="index"
+                    :prop="item.prop"
+                    :label="item.label" :width="item.width">
+                  </el-table-column>
+                </template>
+              </el-table>
+            </div>
+            <div v-else-if="publishedRestrictedPapers" v-loading="publishedRestrictedPapersLoading">
+                <el-table
+                :data="pageTableData"
+                style="width: 100%"
+                height="550px"
+                >
+                <!--Building table body-->
+                <template v-for="(item, index) in publishedRestrictedPaperstableLabel">
+                  <el-table-column
+                    :key="index"
+                    :prop="item.prop"
+                    :label="item.label" :width="item.width">
+                  </el-table-column>
+                </template>
+              </el-table>
             </div>
             <div v-else-if="defaultPageItem">
                 <p>No data retrieved</p>
             </div>
-            <el-dialog title="Send requested paper to user" width="36%" :visible.sync="captureSendPaperToUserDialog">
-                  <el-form :model="jSendPaperToUserForm"
-                  :rules="rules"
-                  ref="jSendPaperToUserForm">
-                      <el-form-item label="IPFS has of requested paper" prop="ipfsHashOfRequestedPaper">
-                        <el-select
-                          v-model="jSendPaperToUserForm.ipfsHashOfRequestedPaper"
-                          style="width:100%"
-                          placeholder="Please select IPFS hash of requested paper"
-                          value-key="id">
-                          <el-option
-                            v-for="reqIPFShash in reqIPFShashes"
-                            :key="reqIPFShash.id"
-                            :label="reqIPFShash.hash"
-                            :value="reqIPFShash">
-                          </el-option>
-                        </el-select>
-                      </el-form-item>
-                  </el-form>
-                  <span slot="footer" class="dialog-footer">
-                      <el-button @click="captureSendPaperToUserDialog = false">Cancel</el-button>
-                      <el-button :loading="getRequestedLoadState" type="primary" @click="sendReqPaperToUser('jSendPaperToUserForm')">Confirm</el-button>
-                  </span>
-                </el-dialog>
           </el-col>
         </el-row>
     </div>
@@ -149,10 +154,7 @@
 import web3 from '@/assets/js/web3'
 import { ABI, contractAddress, suppliedGas } from '@/assets/js/contractABI'
 import { getIPFSstring } from '@/assets/js/bufferConvert'
-import { generateKeyPair, asymmEncrypt } from '@/assets/js/asymmEncrypt'
-import { symDecrypt } from '@/assets/js/symEncryptAndDec'
 import convertIPFSstringToBytes from '@/assets/js/convertIPFShash.js'
-const ipfs = new window.Ipfs()
 
 export default {
   // name: 'Home',
@@ -168,27 +170,25 @@ export default {
       pageTableData: [],
       reqPageTableData: [],
       // Table data ends.
-      // Array to hold requested IPFS hashes of papers begins.
-      reqIPFShashes: [],
       // Array to hold requested IPFS hashes of papers ends.
-      receivedSub: false,
-      revisedSub: false,
-      paidPapers: false,
-      reqPaper: false,
-      sendPaperToUser: false,
+      submittedPapers: false,
+      acceptedPapers: false,
+      papersToRevise: false,
+      rejectedPapers: false,
+      recPaidPapers: false,
+      publishedRestrictedPapers: false,
       defaultPageItem: false,
       jAccountIndexEntered: '',
       authorDashboardTaskBtnLoadState: false,
-      captureSendPaperToUserDialog: false,
-      getJAccountLoadState: false,
-      receivedSubLoading: false,
-      revSubLoading: false,
-      paidPapersbLoading: false,
-      reqPapersLoading: false,
-      sendPaperLoading: false,
+      submittedPapersSubLoading: false,
+      acceptedPapersSubLoading: false,
+      papersToRevisebLoading: false,
+      rejectedPapersLoading: false,
+      recPaidPapersLoading: false,
+      publishedRestrictedPapersLoading: false,
       getRequestedLoadState: false,
       rules: {
-        jTask: [
+        authorTask: [
           { required: true, message: 'Please select desired task', trigger: 'blur' }
         ],
         accountNum: [
@@ -197,25 +197,29 @@ export default {
         ]
       },
       // Table labels begin.
-      receivedPaperstableLabel: [
-        { label: 'Paper Hash', prop: 'paperHash', width: '320px' },
-        { label: 'IPFS hash', prop: 'paperIPFShash' },
-        { label: 'Paper Title', prop: 'paperTitle' },
-        { label: 'Submitting author', prop: 'submittingAuthor' },
-        { label: 'Authors public key', prop: 'userPubKey' },
-        { label: 'IPFS hash of Suppl. paper', prop: 'suppleFileIPFShash' }
+      submittedPaperstableLabel: [
+        { label: 'Title of submitted paper', prop: 'paperTitle', width: '360px' },
+        { label: 'URL of Journal submitted', prop: 'jURL' }
       ],
-      revisedPaperstableLabel: [
-        { label: 'Hash of the original paper', prop: 'origPaperHash', width: '560px' },
-        { label: 'Hash of the revised paper', prop: 'newPaperHash' }
+      acceptedPaperstableLabel: [
+        { label: 'Hash of accepted paper', prop: 'paperHash', width: '560px' },
+        { label: 'Name of the Journal', prop: 'jName' }
       ],
-      paidPaperstableLabel: [
-        { label: 'Payee', prop: 'source', width: '380px' },
-        { label: 'Hash of the paid paper', prop: 'paperHash' }
+      papersToRevisetableLabel: [
+        { label: 'Hash of paper to revise', prop: 'paperHash', width: '560px' },
+        { label: 'IPFS link to revision file', prop: 'revisionNote' }
       ],
-      reqPaperstableLabel: [
-        { label: 'IPFS hash of requested paper', prop: 'IPFShash', width: '440px' },
-        { label: 'Public key of requestee', prop: 'userPUbKey' }
+      rejectedPaperstableLabel: [
+        { label: 'Hash of rejected paper', prop: 'paperHash', width: '560px' },
+        { label: 'IPFS link of rejection notice', prop: 'ipfsHashOfRejReason' }
+      ],
+      recPaidPaperstableLabel: [
+        { label: 'IPFS link of requested paper', prop: 'paperIPFSHashReq', width: '560px' },
+        { label: 'IPFS link to download file', prop: 'perUserIPFSencryptedLink' }
+      ],
+      publishedRestrictedPaperstableLabel: [
+        { label: 'Title of paper', prop: 'paperTitle', width: '500px' },
+        { label: 'IPFS hash of published paper', prop: 'paperIPFSHash' }
       ]
       // Table labels end.
     }
@@ -237,33 +241,6 @@ export default {
           console.log('Ethereum address of this author is: ', accounts[value])
           this.jAccountIndexEntered = value
           web3.eth.defaultAccount = accounts[value]
-          // Get requested paper IPFS hashes into array.
-          var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
-          console.log('Contract instance for access type retrieval created.')
-          jpBlockContract.getPastEvents('userRequestedPaper', { filter: { jAdd: [web3.eth.defaultAccount] }, fromBlock: 0, toBlock: 'latest' },
-            (err, results) => {
-              if (err) {
-                this.receivedSubLoading = false
-                this.$message.error('Sorry! Error retrieving data. Please, try again later.')
-              } else {
-                // Get the data and display.
-                if (Object.keys(results).length === 0) {
-                  this.defaultPageItem = true
-                  console.log('No requested papers yet.')
-                } else {
-                  // Results is not empty hence get and display.
-                  // console.log('Received submissions: ', results)
-                  console.log('Total of requested papers: ', Object.keys(results).length)
-                  for (let i = 0; i < Object.keys(results).length; i++) {
-                    this.reqPageTableData[i] = []
-                    this.reqIPFShashes[i] = []
-                    this.reqPageTableData[i].IPFShash = getIPFSstring(results[i].returnValues.IPFShash)
-                    this.reqIPFShashes[i] = { id: i, hash: this.reqPageTableData[i].IPFShash }
-                    this.reqPageTableData[i].userPUbKey = results[i].returnValues.userPUbKey
-                  }
-                }
-              }
-            })
         })
       } catch { console.log('Error occured with web3') }
     })
@@ -272,38 +249,36 @@ export default {
     submitForm (formName) {
       if (this.jAccountIndexEntered.length !== 0) {
         this.$refs[formName].validate(valid => {
-          this.jDashboardTaskBtnLoadState = true
+          this.authorDashboardTaskBtnLoadState = true
           if (valid) {
             // Call different methods here based on journal's selection.
-            if (this.jBoardTasks.jTask === 'recSub') {
-              // console.log('Preparing to retrieve submitted papers')
-              this.getReceivedSub()
+            if (this.authorBoardTasks.authorTask === 'submittedPapers') {
+              this.getSubmittedPapers()
               return
-            } else if (this.jBoardTasks.jTask === 'revisedSub') {
-              // console.log('Preparing to retrieve revised papers')
-              this.getRevisedSub()
+            } else if (this.authorBoardTasks.authorTask === 'acceptedPapers') {
+              this.getAcceptedPapers()
               return
-            } else if (this.jBoardTasks.jTask === 'paymentsMade') {
-              // console.log('Preparing to retrieve accepted paid papers')
-              this.getPaidPapers()
+            } else if (this.authorBoardTasks.authorTask === 'papersToRevise') {
+              this.getPapersToRevise()
               return
-            } else if (this.jBoardTasks.jTask === 'requestedPaper') {
-              // console.log('Preparing to retrieve requested papers')
-              this.getReqPaper()
+            } else if (this.authorBoardTasks.authorTask === 'rejectedPapers') {
+              this.getRejectedPapers()
               return
-            } else if (this.jBoardTasks.jTask === 'sendPaperToUser') {
-              // console.log('Preparing for send paper to user procedure.')
-              this.captureSendPaperToUserDialog = true
+            } else if (this.authorBoardTasks.authorTask === 'recPaidPapers') {
+              this.getReceivedPaidPapers()
+              return
+            } else if (this.authorBoardTasks.authorTask === 'publishedRestrictedPapers') {
+              this.getPublishedResPapers()
             }
-            this.jDashboardTaskBtnLoadState = false
+            this.authorDashboardTaskBtnLoadState = false
           } else {
             console.log('Submission error.')
-            this.jDashboardTaskBtnLoadState = false
+            this.authorDashboardTaskBtnLoadState = false
             return false
           }
         })
       } else {
-        this.$message('Enter required journal account. Reloading page...')
+        this.$message('Enter required user account. Reloading page...')
         window.location.reload()
       }
     },
@@ -318,267 +293,283 @@ export default {
     backToPrvPage () {
       this.$router.push('/')
     },
-    getReceivedSub () {
-      this.jDashboardTaskBtnLoadState = false
-      this.receivedSubLoading = true
-      this.defaultPageItem = false
-      this.revisedSub = false
-      this.reqPaper = false
-      this.sendPaperToUser = false
-      this.paidPapers = false
+    getSubmittedPapers () {
+      this.authorDashboardTaskBtnLoadState = true
+      this.submittedPapersSubLoading = true
+      // this.submittedPapers = false
+      this.acceptedPapers = false
+      this.papersToRevise = false
+      this.rejectedPapers = false
+      this.recPaidPapers = false
+      this.publishedRestrictedPapers = false
       // Perform required task and return true.
       var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
       console.log('Contract instance for access type retrieval created.')
-      jpBlockContract.getPastEvents('journalRecSub', { filter: { jAddress: [web3.eth.defaultAccount] }, fromBlock: 0, toBlock: 'latest' },
+      jpBlockContract.getPastEvents('paperSubDetails', { filter: { submittingAuthor: [web3.eth.defaultAccount] }, fromBlock: 0, toBlock: 'latest' },
         (err, results) => {
           if (err) {
-            this.receivedSubLoading = false
+            this.submittedPapersSubLoading = false
             this.$message.error('Sorry! Error retrieving data. Please, try again later.')
           } else {
           // Get the data and display.
             if (Object.keys(results).length === 0) {
-              this.jDashboardTaskBtnLoadState = false
-              this.receivedSubLoading = false
+              this.authorDashboardTaskBtnLoadState = false
               this.defaultPageItem = true
             } else {
               // Results is not empty hence get and display.
               // console.log('Received submissions: ', results)
-              console.log('Total submissions: ', Object.keys(results).length)
+              console.log('Total submitted papers: ', Object.keys(results).length)
               for (let i = 0; i < Object.keys(results).length; i++) {
                 this.pageTableData[i] = []
-                this.pageTableData[i].paperHash = results[i].returnValues.paperHash
-                this.pageTableData[i].paperIPFShash = getIPFSstring(results[i].returnValues.paperIPFShash)
                 this.pageTableData[i].paperTitle = web3.utils.hexToUtf8(results[i].returnValues.paperTitle)
-                this.pageTableData[i].submittingAuthor = results[i].returnValues.submittingAuthor
-                this.pageTableData[i].suppleFileIPFShash = getIPFSstring(results[i].returnValues.suppleFileIPFShash)
-                this.pageTableData[i].userPubKey = results[i].returnValues.userPubKey
+                this.pageTableData[i].jURL = results[i].returnValues.jURL
               }
-              this.jDashboardTaskBtnLoadState = false
-              this.receivedSubLoading = false
+              this.authorDashboardTaskBtnLoadState = false
+              this.submittedPapersSubLoading = false
               // console.log('Objet to display as table: ', this.pageTableData)
-              this.receivedSub = true
+              this.submittedPapers = true
             }
           }
         })
     },
-    getRevisedSub () {
-      // console.log('Retrieving revised papers.')
-      this.revSubLoading = true
-      this.defaultPageItem = false
-      this.receivedSub = false
-      this.reqPaper = false
-      this.sendPaperToUser = false
-      this.paidPapers = false
+    getAcceptedPapers () {
+      this.authorDashboardTaskBtnLoadState = true
+      this.acceptedPapersSubLoading = true
+      this.submittedPapers = false
+      // this.acceptedPapers = false
+      this.papersToRevise = false
+      this.rejectedPapers = false
+      this.recPaidPapers = false
+      this.publishedRestrictedPapers = false
       // Perform required task and return true.
       var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
       console.log('Contract instance for access type retrieval created.')
-      jpBlockContract.getPastEvents('revisedAndReSubmittedManu', { filter: { jAddress: [web3.eth.defaultAccount] }, fromBlock: 0, toBlock: 'latest' },
+      jpBlockContract.getPastEvents('noticeOfAcceptance', { filter: { submittingAuthor: [web3.eth.defaultAccount] }, fromBlock: 0, toBlock: 'latest' },
         (err, results) => {
           if (err) {
-            this.receivedSubLoading = false
+            this.acceptedPapersSubLoading = false
             this.$message.error('Sorry! Error retrieving data. Please, try again later.')
           } else {
           // Get the data and display.
             if (Object.keys(results).length === 0) {
-              this.jDashboardTaskBtnLoadState = false
-              this.receivedSubLoading = false
+              this.authorDashboardTaskBtnLoadState = false
               this.defaultPageItem = true
             } else {
               // Results is not empty hence get and display.
               // console.log('Received submissions: ', results)
-              console.log('Total revised papers: ', Object.keys(results).length)
+              console.log('Total accepted papers: ', Object.keys(results).length)
               for (let i = 0; i < Object.keys(results).length; i++) {
                 this.pageTableData[i] = []
-                this.pageTableData[i].origPaperHash = results[i].returnValues.origPaperHash
-                this.pageTableData[i].newPaperHash = results[i].returnValues.newPaperHash
-              }
-              this.jDashboardTaskBtnLoadState = false
-              this.revSubLoading = false
-              // console.log('Objet to display as table: ', this.pageTableData)
-              this.revisedSub = true
-            }
-          }
-        })
-    },
-    getPaidPapers () {
-      this.jDashboardTaskBtnLoadState = true
-      this.paidPapersbLoading = true
-      this.defaultPageItem = false // 1
-      this.receivedSub = false // 2
-      this.reqPaper = false // 3
-      this.sendPaperToUser = false // 4
-      this.revisedSub = false // 5
-      // Perform required task and return true.
-      var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
-      console.log('Contract instance for access type retrieval created.')
-      jpBlockContract.getPastEvents('paymentMade', { filter: { to: [web3.eth.defaultAccount] }, fromBlock: 0, toBlock: 'latest' },
-        (err, results) => {
-          if (err) {
-            this.receivedSubLoading = false
-            this.$message.error('Sorry! Error retrieving data. Please, try again later.')
-          } else {
-          // Get the data and display.
-            if (Object.keys(results).length === 0) {
-              this.jDashboardTaskBtnLoadState = false
-              this.receivedSubLoading = false
-              this.defaultPageItem = true
-            } else {
-              // Results is not empty hence get and display.
-              // console.log('Received submissions: ', results)
-              console.log('Total paid for papers: ', Object.keys(results).length)
-              for (let i = 0; i < Object.keys(results).length; i++) {
-                this.pageTableData[i] = []
-                this.pageTableData[i].source = results[i].returnValues.source
                 this.pageTableData[i].paperHash = results[i].returnValues.paperHash
+                this.pageTableData[i].jName = web3.utils.hexToAscii(results[i].returnValues.jName).replace(/[^a-z]/gi, '')
               }
-              this.jDashboardTaskBtnLoadState = false
-              this.paidPapersbLoading = false
+              this.authorDashboardTaskBtnLoadState = false
+              this.acceptedPapersSubLoading = false
               // console.log('Objet to display as table: ', this.pageTableData)
-              this.paidPapers = true
+              this.acceptedPapers = true
             }
           }
         })
     },
-    getReqPaper () {
-      // console.log('Retrieving requested papers.')
-      this.jDashboardTaskBtnLoadState = true
-      this.reqPapersLoading = true
-      this.defaultPageItem = false // 1
-      this.receivedSub = false // 2
-      this.paidPapers = false // 3
-      this.sendPaperToUser = false // 4
-      this.revisedSub = false // 5
-      this.receivedSubLoading = false
-      // Set load button to false.
-      this.jDashboardTaskBtnLoadState = false
-      this.reqPapersLoading = false
-      // Just display since it's table data was populated on page creation.
-      this.reqPaper = true // 6
-    },
-    getSendPaperToUser () {
-      this.jDashboardTaskBtnLoadState = true
-      this.sendPaperLoading = true
-      this.defaultPageItem = false // 1
-      this.receivedSub = false // 2
-      this.reqPaper = false // 3
-      this.paidPapers = false // 4
-      this.revisedSub = false // 5
+    getPapersToRevise () {
+      this.authorDashboardTaskBtnLoadState = true
+      this.papersToRevisebLoading = true
+      this.submittedPapers = false
+      this.acceptedPapers = false
+      // this.papersToRevise = false
+      this.rejectedPapers = false
+      this.recPaidPapers = false
+      this.publishedRestrictedPapers = false
       // Perform required task and return true.
-      // Set load button to false.
-      this.jDashboardTaskBtnLoadState = false
-      this.sendPaperLoading = false
-      this.sendPaperToUser = true // 6
-    },
-    sendReqPaperToUser (formName) {
-      if (this.jAccountIndexEntered.length !== 0) {
-        this.$refs[formName].validate(valid => {
-          this.captureSendPaperToUserDialog = true
-          if (valid) {
-            this.getRequestedLoadState = true
-            // Get and decrypt the requested IPFS file.
-            ipfs.cat(this.jSendPaperToUserForm.ipfsHashOfRequestedPaper.hash).then(res => {
-              console.log('IPFS cat success.')
-              var ipfsEncryptedData = res.toString('utf8')
-              // Perform decryption.
-              this.$prompt('Please enter data decryption key.', 'Information required', {
-                confirmButtonText: 'Continue',
-                cancelButtonText: 'Cancel',
-                inputPlaceholder: 'Decryption key.'
-              }).then(({ value }) => {
-                symDecrypt(ipfsEncryptedData, value).then(decryptedBytes => {
-                  if (Object.keys(decryptedBytes).length !== 0) {
-                    console.log('Decryption successful')
-                    // Get user public key to encrypt the data.
-                    this.$prompt('Please enter user public key to encrypt data.', 'Information required', {
-                      confirmButtonText: 'Continue',
-                      cancelButtonText: 'Cancel',
-                      inputPlaceholder: 'Encryption key.'
-                    }).then(({ value }) => {
-                      var userPubKey = this.convertHextoBytes(value.substring(2))
-                      // Create key pair.
-                      var journalKeyPair = generateKeyPair()
-                      var jPrvKey = journalKeyPair.secretKey
-                      // var jPubKey = journalKeyPair.publicKey
-                      var encryptedUserData = asymmEncrypt(jPrvKey, decryptedBytes, userPubKey)
-                      // Push to IPFS.
-                      this.pushToIPFShub(encryptedUserData)
-                    })
-                  } else {
-                    console.log('Sorry! Data Decryption error.')
-                    this.getRequestedLoadState = false
-                    this.$message.error('Sorry! Wrong decryption key.')
-                  }
-                }).catch((err) => {
-                  this.getRequestedLoadState = false
-                  console.log('Error with', err)
-                  this.$message.error('Error decrypting data.')
-                })
-              })
-            }).catch((err) => {
-              this.getRequestedLoadState = false
-              console.log('Error pulling data from IPFS', err)
-              this.$message.error('Error getting data from IPFS.')
-            })
+      var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
+      console.log('Contract instance for access type retrieval created.')
+      jpBlockContract.getPastEvents('noticeOfRevision', { filter: { submittingAuthor: [web3.eth.defaultAccount] }, fromBlock: 0, toBlock: 'latest' },
+        (err, results) => {
+          if (err) {
+            this.papersToRevisebLoading = false
+            this.$message.error('Sorry! Error retrieving data. Please, try again later.')
           } else {
-            console.log('Submission error.')
-            this.getRequestedLoadState = false
-            return false
+          // Get the data and display.
+            if (Object.keys(results).length === 0) {
+              this.authorDashboardTaskBtnLoadState = false
+              this.defaultPageItem = true
+            } else {
+              // Results is not empty hence get and display.
+              // console.log('Received submissions: ', results)
+              console.log('Total of papers to revise: ', Object.keys(results).length)
+              for (let i = 0; i < Object.keys(results).length; i++) {
+                this.pageTableData[i] = []
+                this.pageTableData[i].paperHash = results[i].returnValues.paperHash
+                this.pageTableData[i].revisionNote = getIPFSstring(results[i].returnValues.revisionNote)
+              }
+              this.authorDashboardTaskBtnLoadState = false
+              this.papersToRevisebLoading = false
+              // console.log('Objet to display as table: ', this.pageTableData)
+              this.papersToRevise = true
+            }
           }
         })
-      }
+    },
+    getRejectedPapers () {
+      this.authorDashboardTaskBtnLoadState = true
+      this.rejectedPapersLoading = true
+      this.submittedPapers = false
+      this.acceptedPapers = false
+      this.papersToRevise = false
+      // this.rejectedPapers = false
+      this.recPaidPapers = false
+      this.publishedRestrictedPapers = false
+      // Perform required task and return true.
+      var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
+      console.log('Contract instance for access type retrieval created.')
+      jpBlockContract.getPastEvents('rejectionNotice', { filter: { submittingAuthor: [web3.eth.defaultAccount] }, fromBlock: 0, toBlock: 'latest' },
+        (err, results) => {
+          if (err) {
+            this.rejectedPapersLoading = false
+            this.$message.error('Sorry! Error retrieving data. Please, try again later.')
+          } else {
+          // Get the data and display.
+            if (Object.keys(results).length === 0) {
+              this.authorDashboardTaskBtnLoadState = false
+              this.defaultPageItem = true
+            } else {
+              // Results is not empty hence get and display.
+              // console.log('Received submissions: ', results)
+              console.log('Total number of rejected papers: ', Object.keys(results).length)
+              for (let i = 0; i < Object.keys(results).length; i++) {
+                this.pageTableData[i] = []
+                this.pageTableData[i].paperHash = results[i].returnValues.paperHash
+                this.pageTableData[i].ipfsHashOfRejReason = getIPFSstring(results[i].returnValues.ipfsHashOfRejReason)
+              }
+              this.authorDashboardTaskBtnLoadState = false
+              this.rejectedPapersLoading = false
+              // console.log('Objet to display as table: ', this.pageTableData)
+              this.rejectedPapers = true
+            }
+          }
+        })
+    },
+    getReceivedPaidPapers () {
+      this.authorDashboardTaskBtnLoadState = true
+      this.recPaidPapersLoading = true
+      this.submittedPapers = false
+      this.acceptedPapers = false
+      this.papersToRevise = false
+      this.rejectedPapers = false
+      // this.recPaidPapers = false
+      this.publishedRestrictedPapers = false
+      // Perform required task and return true.
+      this.$prompt('Please enter the IPFS link you requested.', 'Information required', {
+        confirmButtonText: 'Continue',
+        cancelButtonText: 'Cancel',
+        inputPlaceholder: 'IPFS hash of the paper.'
+      }).then(({ value }) => {
+        if (this.ipfsInputValidation(value) === 1) {
+          console.log('Valid IPFS hash entered', value)
+          var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
+          console.log('Contract instance for received paid-for papers created.')
+          jpBlockContract.getPastEvents('userRequestMet', { filter: { paperIPFSHashReq: [convertIPFSstringToBytes(value)] }, fromBlock: 0, toBlock: 'latest' },
+            (err, results) => {
+              if (err) {
+                this.recPaidPapersLoading = false
+                this.authorDashboardTaskBtnLoadState = false
+                this.$message.error('Sorry! Error retrieving data. Please, try again later.')
+              } else {
+              // Get the data and display.
+                if (Object.keys(results).length === 0) {
+                  console.log('Empty data.')
+                  this.authorDashboardTaskBtnLoadState = false
+                  this.defaultPageItem = true
+                } else {
+                  // Results is not empty hence get and display.
+                  console.log('Total paid for papers: ', Object.keys(results).length)
+                  for (let i = 0; i < Object.keys(results).length; i++) {
+                    this.pageTableData[i] = []
+                    this.pageTableData[i].paperIPFSHashReq = getIPFSstring(results[i].returnValues.paperIPFSHashReq)
+                    this.pageTableData[i].perUserIPFSencryptedLink = getIPFSstring(results[i].returnValues.perUserIPFSencryptedLink)
+                  }
+                  this.authorDashboardTaskBtnLoadState = false
+                  this.recPaidPapersLoading = false
+                  // console.log('Objet to display as table: ', this.pageTableData)
+                  this.recPaidPapers = true
+                }
+              }
+            })
+        } else {
+          this.recPaidPapersLoading = false
+          this.$message('Invalid IPFS hash entered. Please, reenter.')
+        }
+      }).catch((err) => {
+        console.log('Error: ', err)
+        this.authorDashboardTaskBtnLoadState = false
+        this.$message('Operation canceled.')
+      })
+    },
+    getPublishedResPapers () {
+      this.authorDashboardTaskBtnLoadState = true
+      this.papersToRevisebLoading = true
+      this.submittedPapers = false
+      this.acceptedPapers = false
+      this.papersToRevise = false
+      this.rejectedPapers = false
+      this.recPaidPapers = false
+      // this.publishedRestrictedPapers = false
+      // Perform required task and return true.
+      this.$prompt('Please enter Ethereum address of the Journal.', 'Information required', {
+        confirmButtonText: 'Continue',
+        cancelButtonText: 'Cancel',
+        inputPlaceholder: 'Eth address of the journal.'
+      }).then(({ value }) => {
+        if (web3.utils.isAddress(value) === true) {
+          var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
+          console.log('Contract instance for access type retrieval created.')
+          jpBlockContract.getPastEvents('restrictedPaperPublished', { filter: { jAdd: [value] }, fromBlock: 0, toBlock: 'latest' },
+            (err, results) => {
+              if (err) {
+                this.receivedSubLoading = false
+                this.authorDashboardTaskBtnLoadState = false
+                this.$message.error('Sorry! Error retrieving data. Please, try again later.')
+              } else {
+              // Get the data and display.
+                if (Object.keys(results).length === 0) {
+                  this.authorDashboardTaskBtnLoadState = false
+                  this.defaultPageItem = true
+                } else {
+                  // Results is not empty hence get and display.
+                  // console.log('Received submissions: ', results)
+                  console.log('Total number of published papers: ', Object.keys(results).length)
+                  for (let i = 0; i < Object.keys(results).length; i++) {
+                    this.pageTableData[i] = []
+                    this.pageTableData[i].paperTitle = web3.utils.hexToUtf8(results[i].returnValues.paperTitle)
+                    this.pageTableData[i].paperIPFSHash = getIPFSstring(results[i].returnValues.paperIPFSHash)
+                  }
+                  this.authorDashboardTaskBtnLoadState = false
+                  this.publishedRestrictedPapersLoading = false
+                  // console.log('Objet to display as table: ', this.pageTableData)
+                  this.publishedRestrictedPapers = true
+                }
+              }
+            })
+        } else {
+          this.$message('Invalid Ethereum address. Please, reenter.')
+        }
+      }).catch((err) => {
+        console.log('Error: ', err)
+        this.authorDashboardTaskBtnLoadState = false
+        this.$message('Operation canceled.')
+      })
     },
     convertHextoBytes (hexString) {
       var bytes = new Uint8Array(Math.ceil(hexString.length / 2))
       for (var i = 0; i < bytes.length; i++) bytes[i] = parseInt(hexString.substr(i * 2, 2), 16)
       return bytes
     },
-    async pushToIPFShub (encryptedData) {
-      var encryptedDataToSendToJviaIPFS = JSON.stringify({ encryptedData })
-      // console.log('Connecting to IPFS.')
-      const MyBuffer = window.Ipfs.Buffer
-      var dataToBuffer = MyBuffer.from(encryptedDataToSendToJviaIPFS)
-      // console.log('Buffer conversion done.')
-      ipfs.add(dataToBuffer).then(res => {
-        // console.log('Response object from IPFS: ', res)
-        // console.log('Returned hash: ', res[0].hash)
-        console.log('Data upload to IPFS sucessful')
-        // Send to the user.
-        this.sendToUserviaScontract(res[0].hash)
-      })
-    },
-    sendToUserviaScontract (ipfsHash) {
-      console.log('IPFS hash is: ', ipfsHash)
-      // Perform conversions.
-      var convIPFShashOfUserReqMet = convertIPFSstringToBytes(ipfsHash)
-      var convIPFShashUserRequsted = convertIPFSstringToBytes(this.jSendPaperToUserForm.ipfsHashOfRequestedPaper)
-      // Send as transaction to the smart contract.
-      var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
-      console.log('Contract instance created.')
-      try {
-        jpBlockContract.methods.sendToPaidUser(convIPFShashUserRequsted, convIPFShashOfUserReqMet).send({
-          from: web3.eth.defaultAccount,
-          gas: 450000 // Check gas issues.
-        }).on('transactionHash', (hash) => {
-          console.log('Trans. hash is: ', hash)
-        }).on('receipt', (receipt) => {
-          console.log('Trans. Block Number is: ', receipt.blockNumber)
-          // Set submit loading state to false.
-          this.getRequestedLoadState = false
-          this.$message({
-            message: 'Paper successfully sent to user.',
-            type: 'success'
-          })
-          this.captureSendPaperToUserDialog = false
-        }).on('error', (error) => {
-          console.log('Error occured.', error)
-          this.getRequestedLoadState = false
-          this.$message.error('Sorry! Transaction error. Please, try again later.')
-          // window.location.reload()
-        })
-      } catch {
-        console.log('Sorry! Error occured.')
-        this.getRequestedLoadState = false
-        this.$message.error('Sorry! Non-transactional. Please try again later.')
+    ipfsInputValidation (input) {
+      const count = input.toString().length
+      if (input === '' || count < 46 || input.startsWith('Qm') === false) { // More validation needed.
+        return 0
+      } else {
+        return 1
       }
     }
   }
