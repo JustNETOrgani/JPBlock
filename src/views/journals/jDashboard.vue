@@ -253,13 +253,15 @@ export default {
                   // Results is not empty hence get and display.
                   // console.log('Received submissions: ', results)
                   console.log('Total of requested papers: ', Object.keys(results).length)
+                  var tempArray = []
                   for (let i = 0; i < Object.keys(results).length; i++) {
                     this.reqPageTableData[i] = []
-                    this.reqIPFShashes[i] = []
+                    tempArray[i] = []
                     this.reqPageTableData[i].IPFShash = getIPFSstring(results[i].returnValues.IPFShash)
-                    this.reqIPFShashes[i] = { id: i, hash: this.reqPageTableData[i].IPFShash }
+                    tempArray[i] = { id: i, hash: this.reqPageTableData[i].IPFShash }
                     this.reqPageTableData[i].userPUbKey = results[i].returnValues.userPUbKey
                   }
+                  this.reqIPFShashes = [...new Set(tempArray.map(item => item.hash))]
                 }
               }
             })
@@ -549,7 +551,7 @@ export default {
       console.log('IPFS hash is: ', ipfsHash)
       // Perform conversions.
       var convIPFShashOfUserReqMet = convertIPFSstringToBytes(ipfsHash)
-      var convIPFShashUserRequsted = convertIPFSstringToBytes(this.jSendPaperToUserForm.ipfsHashOfRequestedPaper)
+      var convIPFShashUserRequsted = convertIPFSstringToBytes(this.jSendPaperToUserForm.ipfsHashOfRequestedPaper.hash)
       // Send as transaction to the smart contract.
       var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
       console.log('Contract instance created.')
