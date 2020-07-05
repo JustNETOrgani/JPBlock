@@ -30,7 +30,7 @@
       <template slot="title">Author Tasks</template>
       <el-menu-item index="3-1"><el-link style="color:#fff" href="authors/submitPaper">Submit Paper</el-link></el-menu-item>
       <el-menu-item index="3-2"><el-link style="color:#fff" href="paperTrackingService">Track Submitted Paper</el-link></el-menu-item>
-      <el-menu-item index="3-3"><el-link style="color:#fff" href="authors/dashboard">Author Dashboard</el-link></el-menu-item>
+      <el-menu-item index="3-3"><el-link style="color:#fff" href="authors/authorDashboard">Author Dashboard</el-link></el-menu-item>
       <el-menu-item index="3-4"><el-link style="color:#fff" href="authorWorks">Check Author works</el-link></el-menu-item>
       <el-menu-item index="3-5"><el-link style="color:#fff" href="payForPaperPublication">Pay for Accepted Paper</el-link></el-menu-item>
       <el-menu-item index="3-6"><el-link style="color:#fff" href="payToGetRestrictedPaper">Pay to get restricted paper</el-link></el-menu-item>

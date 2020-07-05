@@ -57,6 +57,11 @@ const routes = [
     name: 'authorPsubmit',
     component: () => import('@/views/authors/submitPaper.vue')
   },
+  {
+    path: '/authors/authorDashboard',
+    name: 'aDashboard',
+    component: () => import('@/views/authors/authorDashboard.vue')
+  },
   // GLobal use
   {
     path: '/paperTrackingService',
