@@ -294,6 +294,7 @@ export default {
       this.$router.push('/')
     },
     getSubmittedPapers () {
+      this.pageTableData.splice(0, this.pageTableData.length) // Remove all previously stored values.
       this.authorDashboardTaskBtnLoadState = true
       this.submittedPapersSubLoading = true
       // this.submittedPapers = false
@@ -333,6 +334,7 @@ export default {
         })
     },
     getAcceptedPapers () {
+      this.pageTableData.splice(0, this.pageTableData.length) // Remove all previously stored values.
       this.authorDashboardTaskBtnLoadState = true
       this.acceptedPapersSubLoading = true
       this.submittedPapers = false
@@ -372,6 +374,7 @@ export default {
         })
     },
     getPapersToRevise () {
+      this.pageTableData.splice(0, this.pageTableData.length) // Remove all previously stored values.
       this.authorDashboardTaskBtnLoadState = true
       this.papersToRevisebLoading = true
       this.submittedPapers = false
@@ -411,6 +414,7 @@ export default {
         })
     },
     getRejectedPapers () {
+      this.pageTableData.splice(0, this.pageTableData.length) // Remove all previously stored values.
       this.authorDashboardTaskBtnLoadState = true
       this.rejectedPapersLoading = true
       this.submittedPapers = false
@@ -450,6 +454,7 @@ export default {
         })
     },
     getReceivedPaidPapers () {
+      this.pageTableData.splice(0, this.pageTableData.length) // Remove all previously stored values.
       this.authorDashboardTaskBtnLoadState = true
       this.recPaidPapersLoading = true
       this.submittedPapers = false
@@ -497,7 +502,8 @@ export default {
             })
         } else {
           this.recPaidPapersLoading = false
-          this.$message('Invalid IPFS hash entered. Please, reenter.')
+          this.authorDashboardTaskBtnLoadState = false
+          this.$message('Invalid IPFS hash entered.')
         }
       }).catch((err) => {
         console.log('Error: ', err)
@@ -506,6 +512,7 @@ export default {
       })
     },
     getPublishedResPapers () {
+      this.pageTableData.splice(0, this.pageTableData.length) // Remove all previously stored values.
       this.authorDashboardTaskBtnLoadState = true
       this.papersToRevisebLoading = true
       this.submittedPapers = false
