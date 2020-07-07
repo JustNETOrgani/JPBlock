@@ -36,7 +36,7 @@
             </el-col>
             <div class="rowAlignment">
             <el-col :span="5">
-              <el-button type="primary" :loading="jDashboardTaskBtnLoadState" @click="submitForm('jBoardTasks')">Retrieve information</el-button>
+              <el-button type="primary" :loading="jDashboardTaskBtnLoadState" @click="submitForm('jBoardTasks')">Submit</el-button>
             </el-col>
             </div>
           </el-col>
@@ -320,6 +320,7 @@ export default {
       this.$router.push('/')
     },
     getReceivedSub () {
+      this.pageTableData.splice(0, this.pageTableData.length) // Remove all previously stored values.
       this.jDashboardTaskBtnLoadState = false
       this.receivedSubLoading = true
       this.defaultPageItem = false
@@ -364,6 +365,7 @@ export default {
     },
     getRevisedSub () {
       // console.log('Retrieving revised papers.')
+      this.pageTableData.splice(0, this.pageTableData.length) // Remove all previously stored values.
       this.revSubLoading = true
       this.defaultPageItem = false
       this.receivedSub = false
@@ -402,6 +404,7 @@ export default {
         })
     },
     getPaidPapers () {
+      this.pageTableData.splice(0, this.pageTableData.length) // Remove all previously stored values.
       this.jDashboardTaskBtnLoadState = true
       this.paidPapersbLoading = true
       this.defaultPageItem = false // 1
@@ -465,19 +468,16 @@ export default {
       this.paidPapers = false // 4
       this.revisedSub = false // 5
       // Perform required task and return true.
-      // Set load button to false.
-      this.jDashboardTaskBtnLoadState = false
       this.sendPaperLoading = false
       this.sendPaperToUser = true // 6
     },
     sendReqPaperToUser (formName) {
       if (this.jAccountIndexEntered.length !== 0) {
         this.$refs[formName].validate(valid => {
-          this.captureSendPaperToUserDialog = true
           if (valid) {
             this.getRequestedLoadState = true
             // Get and decrypt the requested IPFS file.
-            ipfs.cat(this.jSendPaperToUserForm.ipfsHashOfRequestedPaper.hash).then(res => {
+            ipfs.cat(this.jSendPaperToUserForm.ipfsHashOfRequestedPaper).then(res => {
               console.log('IPFS cat success.')
               var ipfsEncryptedData = res.toString('utf8')
               // Perform decryption.
@@ -503,16 +503,20 @@ export default {
                       var encryptedUserData = asymmEncrypt(jPrvKey, decryptedBytes, userPubKey)
                       // Push to IPFS.
                       this.pushToIPFShub(encryptedUserData)
+                    }).catch((err) => {
+                      console.log('Error!', err)
+                      this.getRequestedLoadState = false
+                      this.$message.error('Sorry! Wrong or invalid public key.')
                     })
                   } else {
-                    console.log('Sorry! Data Decryption error.')
+                    console.log('Error!')
                     this.getRequestedLoadState = false
-                    this.$message.error('Sorry! Wrong decryption key.')
+                    this.$message.error('Sorry! No data found.')
                   }
                 }).catch((err) => {
                   this.getRequestedLoadState = false
                   console.log('Error with', err)
-                  this.$message.error('Error decrypting data.')
+                  this.$message.error('Error! Possible wrong decryption key.')
                 })
               })
             }).catch((err) => {
@@ -545,13 +549,17 @@ export default {
         console.log('Data upload to IPFS sucessful')
         // Send to the user.
         this.sendToUserviaScontract(res[0].hash)
+      }).catch((err) => {
+        console.log('Error!', err)
+        this.getRequestedLoadState = false
+        this.$message.error('Sorry! Error adding to IPFS. Please, try again.')
       })
     },
     sendToUserviaScontract (ipfsHash) {
       console.log('IPFS hash is: ', ipfsHash)
       // Perform conversions.
       var convIPFShashOfUserReqMet = convertIPFSstringToBytes(ipfsHash)
-      var convIPFShashUserRequsted = convertIPFSstringToBytes(this.jSendPaperToUserForm.ipfsHashOfRequestedPaper.hash)
+      var convIPFShashUserRequsted = convertIPFSstringToBytes(this.jSendPaperToUserForm.ipfsHashOfRequestedPaper)
       // Send as transaction to the smart contract.
       var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
       console.log('Contract instance created.')
@@ -565,11 +573,17 @@ export default {
           console.log('Trans. Block Number is: ', receipt.blockNumber)
           // Set submit loading state to false.
           this.getRequestedLoadState = false
-          this.$message({
-            message: 'Paper successfully sent to user.',
-            type: 'success'
-          })
           this.captureSendPaperToUserDialog = false
+          this.jDashboardTaskBtnLoadState = false
+          this.$alert('Requested paper successfully sent to requestee.', 'Sent notification', {
+            confirmButtonText: 'OK',
+            callback: action => {
+              this.$message({
+                type: 'info',
+                message: `action: ${action}`
+              })
+            }
+          })
         }).on('error', (error) => {
           console.log('Error occured.', error)
           this.getRequestedLoadState = false
