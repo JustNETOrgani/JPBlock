@@ -87,6 +87,11 @@ const routes = [
     path: '/payToGetRestrictedPaper',
     name: 'subscriptionLikePay',
     component: () => import('@/views/payToGetRestrictedPaper.vue')
+  },
+  {
+    path: '/authorProfile',
+    name: 'authProfile',
+    component: () => import('@/views/authorProfile.vue')
   }
 ]
 
