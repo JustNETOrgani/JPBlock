@@ -469,7 +469,8 @@ export default {
       if (this.pubKeyOfJournal.length === 0 && this.authorPrvKey.length === 0) {
         this.$prompt('Please input public key of the journal manuscript is being sent.', 'Information required', {
           confirmButtonText: 'OK',
-          cancelButtonText: 'Cancel'
+          cancelButtonText: 'Cancel',
+          inputPattern: /^0x[0-9A-F]{64}$/i
         }).then(({ value }) => {
         // Valid Public key before proceeding.
           this.pubKeyOfJournal = this.convertHextoBytes(value.substring(2))
@@ -477,6 +478,9 @@ export default {
           var authorKeyPair = generateKeyPair()
           this.authorPrvKey = authorKeyPair.secretKey
           this.authorPubKey = authorKeyPair.publicKey
+        }).catch((err) => {
+          console.log('User has cancelled.', err)
+          window.location.reload() // Reload page.
         })
       }
     },
