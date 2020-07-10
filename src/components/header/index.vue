@@ -38,15 +38,13 @@
     </el-submenu>
     <el-submenu index="4">
       <template slot="title">Global users</template>
-      <el-menu-item index="4-1"><el-link style="color:#fff" href="globalDashboard">Global Dashboard</el-link></el-menu-item>
+      <el-menu-item index="4-1"><el-link style="color:#fff" href="globalUsers/globalDashboard">Global dashboard</el-link></el-menu-item>
       <el-menu-item index="4-2"><el-link style="color:#fff" href="proveOfAuthorship">Proof of authorship</el-link></el-menu-item>
       <el-menu-item index="4-3"><el-link style="color:#fff" href="authorProfile">Check Author Profile</el-link></el-menu-item>
       <el-menu-item index="4-4"><el-link style="color:#fff" href="paperTrackingService">Track Paper Status</el-link></el-menu-item>
-      <el-menu-item index="4-5"><el-link style="color:#fff" href="globalDashboard">Total Open Access Publications</el-link></el-menu-item>
-      <el-menu-item index="4-6"><el-link style="color:#fff" href="globalDashboard">Get all Open Access Papers</el-link></el-menu-item>
-      <el-menu-item index="4-7"><el-link style="color:#fff" href="payForPaperPublication">Pay for Accepted Paper</el-link></el-menu-item>
-      <el-menu-item index="4-8"><el-link style="color:#fff" href="payToGetRestrictedPaper">Pay to get restricted paper</el-link></el-menu-item>
-      <el-menu-item index="4-9"><el-link style="color:#fff" href="voteOnJreputation">Vote on Journal reputation</el-link></el-menu-item>
+      <el-menu-item index="4-5"><el-link style="color:#fff" href="payForPaperPublication">Pay for Accepted Paper</el-link></el-menu-item>
+      <el-menu-item index="4-6"><el-link style="color:#fff" href="payToGetRestrictedPaper">Pay to get restricted paper</el-link></el-menu-item>
+      <el-menu-item index="4-7"><el-link style="color:#fff" href="voteOnJreputation">Vote on Journal reputation</el-link></el-menu-item>
     </el-submenu>
   </el-menu>
     </div>

@@ -92,6 +92,11 @@ const routes = [
     path: '/authorProfile',
     name: 'authProfile',
     component: () => import('@/views/authorProfile.vue')
+  },
+  {
+    path: '/globalUsers/globalDashboard',
+    name: 'gDashboard',
+    component: () => import('@/views/globalUsers/globalDashboard.vue')
   }
 ]
 
