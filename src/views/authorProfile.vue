@@ -6,15 +6,15 @@
         <el-row>
           <el-col :span="23" :offset="1">
             <el-col :span="2">
-                    <img class="authorImgs" src="../assets/imgs/authorWorks1.png" />
+                    <img class="authorImgFirst" src="../assets/imgs/authorPix.png" />
             </el-col>
             <el-col :span="3">
                 <h2 id="activityHub">Author Profile</h2>
             </el-col>
-            <el-col :span="6">
-                    <h4 class="textPlacements">Author's Ethereum address</h4>
+            <el-col :span="5">
+              <h4 class="textPlacements">Author's Ethereum address</h4>
             </el-col>
-            <el-col :span="7">
+            <el-col :span="9">
               <div class="rowAlignment">
                   <el-form
                       :model="authorProfileForm"
@@ -29,11 +29,11 @@
               </div>
             </el-col>
             <div class="rowAlignment">
-            <el-col :span="3">
+            <el-col :span="2">
               <el-button type="primary" :loading="authorProfileBtnLoadState" @click="submitForm('authorProfileForm')">Get Profile</el-button>
             </el-col>
             <el-col :span="3">
-                    <img class="authorImgs" src="../assets/imgs/authorWorks2.png" />
+                    <img class="authorImgSecond" src="../assets/imgs/authorWorks1.png" />
             </el-col>
             </div>
           </el-col>
@@ -42,10 +42,22 @@
           <el-col :span="24" :offset="0">
             <h4>Retrieved data appears below</h4>
             <div v-if="authorProfile" v-loading="authorProfileLoading">
+              <el-col :span="5">
+                <h3>Publication Statistics:</h3>
+              </el-col>
+              <el-col :span="5">
+                <p>Total Publications</p><h4>{{totalPubs}}</h4>
+              </el-col>
+              <el-col :span="5">
+                <p>Total Open Access</p><h4>{{totalOAPubs}}</h4>
+              </el-col>
+              <el-col :span="5">
+                <p>Total non-Open Access</p><h4>{{totalNonOAPubs}}</h4>
+              </el-col>
                 <el-table
                 :data="pageTableData"
                 style="width: 100%"
-                height="550px"
+                height="450px"
                 >
                 <!--Building table body-->
                 <template v-for="(item, index) in authorProfileLabel">
@@ -81,8 +93,8 @@
 <script>
 // @ is an alias to /src
 import web3 from '@/assets/js/web3'
-// import { ABI, contractAddress, suppliedGas } from '@/assets/js/contractABI'
-// import { getIPFSstring } from '@/assets/js/bufferConvert'
+import { ABI, contractAddress, suppliedGas } from '@/assets/js/contractABI'
+import { getIPFSstring } from '@/assets/js/bufferConvert'
 // import convertIPFSstringToBytes from '@/assets/js/convertIPFShash.js'
 
 export default {
@@ -92,6 +104,9 @@ export default {
       authorProfileForm: {
         authorEthAddress: ''
       },
+      totalPubs: '',
+      totalOAPubs: '',
+      totalNonOAPubs: '',
       userAccountNumForm: { accountNum: '' },
       userAccountIndexEntered: '',
       pageTableData: [],
@@ -103,7 +118,7 @@ export default {
       authorProfileBtnLoadState: false,
       rules: {
         authorEthAddress: [
-          { required: true, message: 'Please input Eth address of author', trigger: 'blur' },
+          { required: true, message: 'Please input Eth address of the author', trigger: 'blur' },
           { min: 20, message: 'Please input a valid Eth address', trigger: 'blur' }
         ],
         accountNum: [
@@ -113,8 +128,10 @@ export default {
       },
       // Table labels begin.
       authorProfileLabel: [
-        { label: 'Title of submitted paper', prop: 'paperTitle', width: '360px' },
-        { label: 'URL of Journal submitted', prop: 'jURL' }
+        { label: 'Paper Hashes', prop: 'pubHashes', width: '460px' },
+        { label: 'Journals', prop: 'pubJournals', width: '180px' },
+        { label: 'IPFS hashes OA papers', prop: 'OApapers', width: '410px' },
+        { label: 'Paper title', prop: 'paperTitles' }
       ]
       // Table labels end.
     }
@@ -145,12 +162,56 @@ export default {
       if (this.userAccountIndexEntered.length !== 0) {
         this.$refs[formName].validate(valid => {
           this.authorProfileBtnLoadState = true
-          if (valid) {
-            console.log('Getting profile of author with address: ', this.authorProfileForm.authorEthAddress)
+          this.authorProfileLoading = true
+          if (web3.utils.isAddress(this.authorProfileForm.authorEthAddress) === true) {
+            var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
+            console.log('Contract instance created.')
+            // Smart contract and other logic continues.
+            jpBlockContract.methods.retrieveAuthorWorks(this.authorProfileForm.authorEthAddress).call({ from: web3.eth.defaultAccount }).then(res => {
+              console.log('Retrieved author package: ', res)
+              // var tempTable = []
+              console.log('Items: ', res[0])
+              if (res[0] >= 1) { // Checking for zero publications.
+                for (let i = 0; i < Object.keys(res[1]).length; i++) {
+                  this.pageTableData[i] = []
+                  // this.pageTableData[i].totalPublications = res[0]
+                  this.pageTableData[i].pubHashes = res[1][i] // Paper hashes.
+                  this.pageTableData[i].pubJournals = web3.utils.hexToAscii(res[2][i]).replace(/[^a-z]/gi, '') // Journals.
+                  // Regrex for ^ negation of the set (word, underscores and whitespace) enclosed in [] and making them global and case-insenstitive.
+                  this.pageTableData[i].paperTitles = web3.utils.hexToAscii(res[5][i]).replace(/[^\w\s]/gi, '') // Paper titles.
+                  if (res[4].length > 0) {
+                    this.pageTableData[i].OApapers = getIPFSstring(res[4][i]) // All OA papers.
+                  }
+                }
+                this.totalPubs = res[0]
+                this.totalOAPubs = res[3]
+                this.totalNonOAPubs = this.totalPubs - this.totalOAPubs
+                this.authorProfileBtnLoadState = false
+                this.authorProfileLoading = false
+                this.authorProfile = true
+              } else {
+                this.authorProfileBtnLoadState = false
+                this.authorProfileLoading = false
+                this.authorProfile = false
+                this.$alert('This author has no publication on JPBlock.', 'Author Profile on JPBlock', {
+                  confirmButtonText: 'OK',
+                  callback: action => {
+                    this.$message({
+                      type: 'info',
+                      message: `action: ${action}`
+                    })
+                  }
+                })
+              }
+            }).catch((err) => {
+              this.authorProfileBtnLoadState = false
+              this.authorProfileLoading = false
+              console.log('Error occured.', err)
+            })
           } else {
-            console.log('Submission error.')
-            this.authorDashboardTaskBtnLoadState = false
-            return false
+            this.authorProfileBtnLoadState = false
+            this.authorProfileLoading = false
+            this.$message('Invalid Ethereum address entered. Please, reenter.')
           }
         })
       } else {
@@ -250,8 +311,17 @@ export default {
     margin-left: 3rem;
 }
 
-.authorImgs{
+.authorImgFirst{
+    margin-top: 0.5rem;
     height: 3rem;
 }
+
+.authorImgSecond{
+    height: 3rem;
+}
+
+h3{ color: rgb(15, 91, 94);}
+h4{ color: rgb(15, 91, 94); font-style: italic;}
+p{ color: rgb(78, 150, 192);}
 
 </style>
