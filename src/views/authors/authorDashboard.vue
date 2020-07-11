@@ -234,7 +234,7 @@ export default {
       confirmButtonText: 'Continue',
       cancelButtonText: 'Cancel',
       inputPlaceholder: 'A number from 0 to 9.',
-      inputPattern: /^[0-9]{1}$/
+      inputPattern: /^0x[0-9A-F]{40}$/i
     }).then(({ value }) => {
       // Get and use web3 object.
       try {
