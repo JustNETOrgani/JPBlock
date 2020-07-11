@@ -4,6 +4,11 @@
           <el-link icon="el-icon-arrow-left" style="font-size:17px;float:left;" @click="backToPrvPack">Previous Page</el-link>
         </div>
         <div class="formArea" v-loading="loadingJcreationPage">
+          <el-row>
+          <el-col :span="4" :offset="10">
+                    <img id="ethImg" src="../assets/imgs/ethCoin.png" />
+          </el-col>
+          </el-row>
             <h2>Payment center for restricted papers published on JPBlock</h2>
             <el-row>
                 <el-col :span="23" :offset="1">
@@ -224,6 +229,12 @@ export default {
   margin: 2.5% auto;
   width: 48%;
   padding: 1rem 1.5rem;
+}
+
+#ethImg{
+    margin-top: 0.4rem;
+    width: 4rem;
+    height: 3rem;
 }
 
 </style>
