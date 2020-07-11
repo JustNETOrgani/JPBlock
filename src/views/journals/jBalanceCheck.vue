@@ -23,7 +23,7 @@
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="jAccountDialog = false">Cancel</el-button>
+                <el-button @click="pgReload()">Cancel</el-button>
                 <el-button :loading="getJaccountLoadState" type="primary" @click="getUseraccountOnPageLoad('userAccountNumForm')">Confirm</el-button>
             </span>
         </el-dialog>
@@ -96,6 +96,9 @@ export default {
     },
     backToPrvPack () {
       this.$router.push('/')
+    },
+    pgReload () {
+      window.location.reload()
     }
   }
 }

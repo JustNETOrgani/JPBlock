@@ -154,7 +154,13 @@ export default {
           this.userAccountIndexEntered = value
           web3.eth.defaultAccount = accounts[value]
         })
-      } catch { console.log('Error occured with web3') }
+      } catch {
+        console.log('Error occured with web3')
+        window.location.reload() // Reload page.
+      }
+    }).catch((err) => {
+      console.log('User has cancelled.', err)
+      window.location.reload() // Reload page.
     })
   },
   methods: {

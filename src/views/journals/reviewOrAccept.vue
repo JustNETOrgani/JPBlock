@@ -47,7 +47,7 @@
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="journalAccountDialog = false">Cancel</el-button>
+                <el-button @click="pgReload()">Cancel</el-button>
                 <el-button :loading="getJAccountLoadState" type="primary" @click="getJaccountOnPageLoad('jAccountNumForm')">Confirm</el-button>
             </span>
         </el-dialog>
@@ -227,6 +227,9 @@ export default {
     },
     backToPrvPack () {
       this.$router.push('/')
+    },
+    pgReload () {
+      window.location.reload()
     }
   }
 }
