@@ -62,6 +62,68 @@
                 </template>
               </el-table>
             </div>
+            <div v-if="gUserNonOAdata" v-loading="gUserNonOApageLoading">
+                <el-table
+                :data="pageTableData"
+                style="width: 100%"
+                height="450px"
+                >
+                <!--Building table body-->
+                <template v-for="(item, index) in gUserNonOAdataLabel">
+                  <el-table-column
+                    :key="index"
+                    :prop="item.prop"
+                    :label="item.label" :width="item.width">
+                  </el-table-column>
+                </template>
+              </el-table>
+            </div>
+            <div v-if="jDetails" v-loading="jDetailspageLoading">
+                <el-table
+                :data="pageTableData"
+                style="width: 100%"
+                height="450px"
+                >
+                <!--Building table body-->
+                <template v-for="(item, index) in jDetailsOneDataLabel">
+                  <el-table-column
+                    :key="index"
+                    :prop="item.prop"
+                    :label="item.label" :width="item.width">
+                  </el-table-column>
+                </template>
+              </el-table>
+              <el-table
+                :data="pageTableData"
+                style="width: 100%"
+                height="450px"
+                >
+                <!--Building table body-->
+                <template v-for="(item, index) in jDetailsTwoDataLabel">
+                  <el-table-column
+                    :key="index"
+                    :prop="item.prop"
+                    :label="item.label" :width="item.width">
+                  </el-table-column>
+                </template>
+              </el-table>
+            </div>
+            <div v-if="regJournalsData" v-loading="regJsPageLoading">
+                <el-table
+                :data="pageTableData"
+                style="width: 100%"
+                height="450px"
+                >
+                <!--Building table body-->
+                <template v-for="(item, index) in regJournalsDataLabel">
+                  <el-table-column
+                    :key="index"
+                    :prop="item.prop"
+                    :label="item.label" :width="item.width">
+                  </el-table-column>
+                </template>
+              </el-table>
+            </div>
             <div v-else-if="defaultPageItem">
                 <p>No data available</p>
             </div>
@@ -101,10 +163,16 @@ export default {
       userAccountIndexEntered: '',
       pageTableData: [],
       gUserData: false,
+      jDetails: false,
+      gUserNonOAdata: false,
+      regJournalsData: false,
       defaultPageItem: false,
       userAccountDialog: false,
       getUserAccountLoadState: false,
       gUserPageLoading: false,
+      jDetailspageLoading: false,
+      regJsPageLoading: false,
+      gUserNonOApageLoading: false,
       gUserBtnLoadState: false,
       rules: {
         gTask: [
@@ -117,7 +185,29 @@ export default {
       },
       // Table labels begin.
       gUserDataLabel: [
-        { label: 'IPFS hashes Open Access publications', prop: 'OApapers', width: '420px' }
+        { label: 'IPFS hashes of Open Access publications', prop: 'OApapers', width: '420px' }
+      ],
+      gUserNonOAdataLabel: [
+        { label: 'Title of paper', prop: 'paperTitle', width: '300px' },
+        { label: 'IPFS hashes of non Open Access publications', prop: 'paperIPFSHash', width: '420px' }
+      ],
+      jDetailsOneDataLabel: [
+        { label: 'Name of Journal', prop: 'jName', width: '180px' },
+        { label: 'URL of Journal', prop: 'jURL', width: '310px' },
+        { label: 'State of Journal', prop: 'jState', width: '180px' },
+        { label: 'Public Key of Journal', prop: 'jPubKey', width: '310px' }
+      ],
+      jDetailsTwoDataLabel: [
+        { label: 'Reputation of Journal', prop: 'jReputationScore', width: '200px' },
+        { label: 'Impact Factor', prop: 'jIF', width: '150px' },
+        { label: 'Total publication', prop: 'jTotalPub', width: '210px' },
+        { label: 'OA price', prop: 'jOAprice', width: '120px' },
+        { label: 'Non-OA price', prop: 'jnOAprice', width: '140px' },
+        { label: 'Request paper (Eth)', prop: 'jReqPrice', width: '140px' }
+      ],
+      regJournalsDataLabel: [
+        { label: 'Number of registered journals', prop: 'numOfJs', width: '250px' },
+        { label: 'Eth address of journals', prop: 'jAdds', width: '360px' }
       ]
       // Table labels end.
     }
@@ -140,7 +230,13 @@ export default {
           this.userAccountIndexEntered = value
           web3.eth.defaultAccount = accounts[value]
         })
-      } catch { console.log('Error occured with web3') }
+      } catch {
+        console.log('Error occured with web3')
+        window.location.reload() // Reload page.
+      }
+    }).catch((err) => {
+      console.log('User has cancelled.', err)
+      window.location.reload() // Reload page.
     })
   },
   methods: {
@@ -148,21 +244,27 @@ export default {
       if (this.userAccountIndexEntered.length !== 0) {
         this.$refs[formName].validate(valid => {
           if (valid) {
-            this.gUserPageLoading = true
-            this.gUserBtnLoadState = true
             // Call different methods here based on journal's selection.
             if (this.gUserTasks.gTask === 'totalOAPub') {
+              this.gUserPageLoading = true
+              this.gUserBtnLoadState = true
               this.getTotalOApaper()
             } else if (this.gUserTasks.gTask === 'oaPapers') {
+              this.gUserPageLoading = true
+              this.gUserBtnLoadState = true
               this.getOAPapersOnJPBlock()
-            } else if (this.gUserTasks.gTask === 'oaPapers') {
-
             } else if (this.gUserTasks.gTask === 'pubNonOApapers') {
-
+              this.gUserNonOApageLoading = true
+              this.gUserBtnLoadState = true
+              this.getPubNonOApapers()
             } else if (this.gUserTasks.gTask === 'regJournals') {
-
+              this.regJsPageLoading = true
+              this.gUserBtnLoadState = true
+              this.getRegJournals()
             } else if (this.gUserTasks.gTask === 'journalDetail') {
-
+              this.jDetailspageLoading = true
+              this.gUserBtnLoadState = true
+              this.getAjournalDetail()
             }
           } else {
             console.log('Submission error.')
@@ -177,6 +279,10 @@ export default {
       }
     },
     getTotalOApaper () {
+      this.gUserData = false
+      this.jDetails = false
+      this.gUserNonOAdata = false
+      this.regJournalsData = false
       var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
       console.log('Contract instance created.')
       jpBlockContract.methods.countOpenAccessPublications().call({ from: web3.eth.defaultAccount }).then(res => {
@@ -194,6 +300,9 @@ export default {
       })
     },
     getOAPapersOnJPBlock () {
+      this.jDetails = false
+      this.gUserNonOAdata = false
+      this.regJournalsData = false
       var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
       console.log('Contract instance created.')
       jpBlockContract.methods.getOpenAccesspapers().call({ from: web3.eth.defaultAccount }).then(res => {
@@ -209,6 +318,135 @@ export default {
           this.gUserPageLoading = false
           this.gUserBtnLoadState = false
           this.$alert('No Open Access Publications found.', 'Status of Open Access Papers', {
+            confirmButtonText: 'OK',
+            callback: action => {
+              this.$message({
+                type: 'info',
+                message: `action: ${action}`
+              })
+            }
+          })
+        }
+      })
+    },
+    getPubNonOApapers () {
+      this.gUserData = false
+      this.jDetails = false
+      this.regJournalsData = false
+      this.$prompt('Please enter Eth address of the journal.', 'Required information', {
+        confirmButtonText: 'Continue',
+        cancelButtonText: 'Cancel',
+        inputPlaceholder: 'Eth address of the journal.',
+        inputPattern: /^0x[0-9A-F]{40}$/i
+      }).then(({ value }) => {
+        if (web3.utils.isAddress(value) === true) {
+          var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
+          console.log('Contract instance created.')
+          jpBlockContract.getPastEvents('restrictedPaperPublished', { filter: { jAdd: [value] }, fromBlock: 0, toBlock: 'latest' },
+            (err, results) => {
+              if (err) {
+                this.gUserNonOApageLoading = false
+                this.gUserBtnLoadState = false
+                this.$message.error('Sorry! Error retrieving data. Please, try again later.')
+              } else {
+                if (Object.keys(results) > 0) {
+                  for (let i = 0; i < Object.keys(results).length; i++) {
+                    this.pageTableData[i] = []
+                    this.pageTableData[i].paperTitle = web3.utils.hexToUtf8(results[i].returnValues.paperTitle)
+                    this.pageTableData[i].paperIPFSHash = getIPFSstring(results[i].returnValues.paperIPFSHash)
+                  }
+                  this.gUserNonOApageLoading = false
+                  this.gUserBtnLoadState = false
+                  this.gUserNonOAdata = true
+                } else {
+                  this.gUserNonOApageLoading = false
+                  this.gUserBtnLoadState = false
+                  this.$alert('This journal has no non-OA Publications.', 'Status of non-Open Access papers.', {
+                    confirmButtonText: 'OK',
+                    callback: action => {
+                      this.$message({
+                        type: 'info',
+                        message: `action: ${action}`
+                      })
+                    }
+                  })
+                }
+              }
+            })
+        } else {
+          this.gUserPageLoading = false
+          this.gUserBtnLoadState = false
+          this.$message('Invalid Ethereum address format.')
+        }
+      })
+    },
+    getAjournalDetail () {
+      this.gUserData = false
+      this.gUserNonOAdata = false
+      this.regJournalsData = false
+      this.$prompt('Please enter Eth address of the journal.', 'Required information', {
+        confirmButtonText: 'Continue',
+        cancelButtonText: 'Cancel',
+        inputPlaceholder: 'Eth address of the journal.',
+        inputPattern: /^0x[0-9A-F]{40}$/i
+      }).then(({ value }) => {
+        if (web3.utils.isAddress(value) === true) {
+          var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
+          console.log('Contract instance created.')
+          jpBlockContract.methods.getAjournalDetail(value).call({ from: web3.eth.defaultAccount }).then(res => {
+            if (res.length > 0) {
+              for (let i = 0; res.length; i++) {
+                this.pageTableData[i].jName = web3.utils.hexToAscii(res[0]).replace(/[^a-z]/gi, '')
+                this.pageTableData[i].jURL = res[1]
+                this.pageTableData[i].jState = res[2]
+                this.pageTableData[i].jReputationScore = res[3]
+                this.pageTableData[i].jTotalPub = res[4]
+                this.pageTableData[i].jIF = res[5] / 10 // To represent it as a decimal number.
+                this.pageTableData[i].jOAprice = web3.utils.fromWei(res[6], 'ether')
+                this.pageTableData[i].jnOAprice = web3.utils.fromWei(res[7], 'ether')
+                this.pageTableData[i].jReqPrice = web3.utils.fromWei(res[8], 'ether')
+                this.pageTableData[i].jPubKey = res[9]
+              }
+              this.jDetailspageLoading = false
+              this.gUserBtnLoadState = false
+              this.jDetails = true
+            } else {
+              this.jDetailspageLoading = false
+              this.gUserBtnLoadState = false
+              this.$message('Sorry! This is not a registered journal on JPBlock.')
+            }
+          }).catch((err) => {
+            this.jDetailspageLoading = false
+            this.gUserBtnLoadState = false
+            console.log('Error getting journal detail: ', err)
+            this.$message.error('Sorry! Error getting journal detail. Please, try again later.')
+          })
+        } else {
+          this.jDetailspageLoading = false
+          this.gUserBtnLoadState = false
+          this.$message('Invalid Ethereum address format.')
+        }
+      })
+    },
+    getRegJournals () {
+      this.gUserData = false
+      this.gUserNonOAdata = false
+      this.jDetails = false
+      var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
+      console.log('Contract instance created.')
+      jpBlockContract.methods.getRegisteredJournals().call({ from: web3.eth.defaultAccount }).then(res => {
+        if (res.length > 0) {
+          for (let i = 0; res.length; i++) {
+            this.pageTableData[i].numOfJs = res[0]
+            this.pageTableData[i].jAdds = res[1]
+          }
+          this.regJsPageLoading = false
+          this.gUserBtnLoadState = false
+          this.regJournalsData = true
+        } else {
+          this.regJsPageLoading = false
+          this.gUserBtnLoadState = false
+          this.$alert('Sorry! There is no registered journal at the moment on JPBlock.', 'Journals on JPBlock', {
             confirmButtonText: 'OK',
             callback: action => {
               this.$message({
