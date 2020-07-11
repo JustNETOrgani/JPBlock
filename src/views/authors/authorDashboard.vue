@@ -233,7 +233,8 @@ export default {
     this.$prompt('Please enter your Ethereum account.', 'Information required', {
       confirmButtonText: 'Continue',
       cancelButtonText: 'Cancel',
-      inputPlaceholder: 'A number from 0 to 9.'
+      inputPlaceholder: 'A number from 0 to 9.',
+      inputPattern: /^[0-9]{1}$/
     }).then(({ value }) => {
       // Get and use web3 object.
       try {
@@ -242,7 +243,13 @@ export default {
           this.jAccountIndexEntered = value
           web3.eth.defaultAccount = accounts[value]
         })
-      } catch { console.log('Error occured with web3') }
+      } catch {
+        console.log('Error occured with web3')
+        window.location.reload() // Reload page
+      }
+    }).catch((err) => {
+      console.log('User has cancelled.', err)
+      window.location.reload() // Reload page.
     })
   },
   methods: {
