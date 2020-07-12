@@ -4,6 +4,11 @@
           <el-link icon="el-icon-arrow-left" style="font-size:17px;float:left;" @click="backToPrvPack">Previous Page</el-link>
         </div>
         <div class="formArea">
+          <el-row>
+            <el-col :span="6" :offset="9">
+              <img id="accBalImg" src="../../assets/imgs/accountBal.png" />
+            </el-col>
+          </el-row>
             <h2>Journal account balance tracker</h2>
             <el-row>
                 <el-col :span="18" :offset="3">
@@ -124,4 +129,10 @@ export default {
   padding: 1rem 1.5rem;
 }
 
+#accBalImg{
+    margin-top: 0.4rem;
+    width: 7rem;
+    height: 5rem;
+    border-radius: 30rem;
+}
 </style>

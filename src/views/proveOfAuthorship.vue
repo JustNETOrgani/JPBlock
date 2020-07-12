@@ -5,7 +5,12 @@
         </div>
         <div class="formArea" v-loading="loadingJcreationPage">
             <h2>Proof of paper authorship</h2>
-            <p>Prove if you are an author or part of authors of a paper on JPBlock.</p>
+            <el-row>
+            <el-col :span="7" :offset="9">
+              <img id="proveImg" src="../assets/imgs/proveIt.png" />
+            </el-col>
+            </el-row>
+            <p id="proveTxt"><i>Prove if you are an author or part of authors of a paper on JPBlock.</i></p>
             <el-row>
                 <el-col :span="23" :offset="1">
                     <div class="grid-content bg-purple-dark">
@@ -277,12 +282,22 @@ export default {
   height: 5%;
 }
 
+#proveTxt{
+  color: rgb(118, 135, 165);
+}
+
 .formArea {
   background-color: #ffffff;
   border-radius: 4px;
   margin: 2.5% auto;
   width: 48%;
   padding: 1rem 1.5rem;
+}
+
+#proveImg{
+    margin-top: 0.4rem;
+    width: 7rem;
+    height: 5rem;
 }
 
 </style>

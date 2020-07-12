@@ -4,7 +4,14 @@
           <el-link icon="el-icon-arrow-left" style="font-size:17px;float:left;" @click="backToPrvPack">Previous Page</el-link>
         </div>
         <div class="formArea" v-loading="loadingJcreationPage">
-            <h2>Paper Tracking Service</h2>
+          <el-row>
+            <el-col :span="10" :offset="6">
+              <h2>Paper Tracking Service</h2>
+            </el-col>
+            <el-col :span="3" :offset="1">
+              <img id="trackImg" src="../assets/imgs/trackSymbol.png" />
+            </el-col>
+          </el-row>
             <el-row>
                 <el-col :span="23" :offset="1">
                     <div class="grid-content bg-purple-dark">
@@ -177,6 +184,12 @@ export default {
   margin: 2.5% auto;
   width: 48%;
   padding: 1rem 1.5rem;
+}
+
+#trackImg{
+    margin-top: 0.8rem;
+    width: 3rem;
+    height: 4rem;
 }
 
 </style>

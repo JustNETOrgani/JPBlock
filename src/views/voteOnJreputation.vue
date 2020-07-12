@@ -4,6 +4,11 @@
           <el-link icon="el-icon-arrow-left" style="font-size:17px;float:left;" @click="backToPrvPack">Previous Page</el-link>
         </div>
         <div class="formArea" v-loading="loadingJcreationPage">
+          <el-row>
+            <el-col :span="4" :offset="10">
+              <img id="voteImg" src="../assets/imgs/voteUp.png" />
+            </el-col>
+          </el-row>
             <h2>Voting on Journal's reputation</h2>
             <p>This pushes upwards the reputation of a Journal.</p>
             <el-row>
@@ -17,8 +22,8 @@
                            <el-form-item label="**User's consent**" prop="authCheckBox">
                                 <el-checkbox v-model="voteOnJForm.authCheckBox">I fully understand the implication of this action.</el-checkbox>
                             </el-form-item>
-                            <el-form-item label="Journal's ethereum" prop="jAddress">
-                                <el-input v-model="voteOnJForm.jAddress" placeholder="Please enter paper's title."></el-input>
+                            <el-form-item label="Journal's Eth address" prop="jAddress">
+                                <el-input v-model="voteOnJForm.jAddress" placeholder="Please Eth address of the journal."></el-input>
                             </el-form-item>
                             <el-form-item>
                                 <el-button type="primary" :loading="voteOnJBtnLoadState" @click="submitForm('voteOnJForm')">Vote now</el-button>
@@ -196,6 +201,12 @@ export default {
   margin: 2.5% auto;
   width: 48%;
   padding: 1rem 1.5rem;
+}
+
+#voteImg{
+    margin-top: 1.2rem;
+    width: 5rem;
+    height: 6rem;
 }
 
 </style>
