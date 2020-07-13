@@ -4,7 +4,19 @@
           <el-link icon="el-icon-arrow-left" style="font-size:17px;float:left;" @click="backToPrvPack">Previous Page</el-link>
         </div>
         <div class="formArea" v-loading="loadingJcreationPage">
-            <h2>Journal creation center</h2>
+          <el-row>
+            <el-col>
+              <img id="jCreatImg" src="../../assets/imgs/jCreation.png" />
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="14" :offset="3">
+              <h2>Journal creation center</h2>
+            </el-col>
+            <el-col :span="4" :offset="1">
+              <img id="jCreatImgTwo" src="../../assets/imgs/createAccount.png" />
+            </el-col>
+          </el-row>
             <el-row>
                 <el-col :span="20" :offset="1">
                     <div class="grid-content bg-purple-dark">
@@ -270,4 +282,15 @@ export default {
   padding: 1rem 1.5rem;
 }
 
+#jCreatImg{
+    margin-top: 0.1rem;
+    width: 5rem;
+    height: 4rem;
+}
+
+#jCreatImgTwo{
+    margin-top: 1.2rem;
+    width: 3rem;
+    height: 2rem;
+}
 </style>

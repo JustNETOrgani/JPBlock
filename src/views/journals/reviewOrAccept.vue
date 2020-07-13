@@ -4,6 +4,17 @@
           <el-link icon="el-icon-arrow-left" style="font-size:17px;float:left;" @click="backToPrvPack">Previous Page</el-link>
         </div>
         <div class="formArea">
+          <el-row>
+            <el-col :span="5" :offset="4">
+              <img class="revOrAcceptImgs" src="../../assets/imgs/reviewOne.png" />
+            </el-col>
+            <el-col :span="5" :offset="1">
+              <img class="revOrAcceptImgs" src="../../assets/imgs/reviewTwo.png" />
+            </el-col>
+            <el-col :span="5" :offset="1">
+              <img class="revOrAcceptImgs" src="../../assets/imgs/acceptOne.png" />
+            </el-col>
+          </el-row>
             <h2>Journal paper review and acceptance</h2>
             <el-row>
                 <el-col :span="22">
@@ -258,4 +269,9 @@ export default {
   padding: 1rem 1.5rem;
 }
 
+.revOrAcceptImgs{
+    margin-top: 1.2rem;
+    width: 5rem;
+    height: 4rem;
+}
 </style>

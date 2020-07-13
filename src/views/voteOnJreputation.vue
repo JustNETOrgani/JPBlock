@@ -23,7 +23,7 @@
                                 <el-checkbox v-model="voteOnJForm.authCheckBox">I fully understand the implication of this action.</el-checkbox>
                             </el-form-item>
                             <el-form-item label="Journal's Eth address" prop="jAddress">
-                                <el-input v-model="voteOnJForm.jAddress" placeholder="Please Eth address of the journal."></el-input>
+                                <el-input v-model="voteOnJForm.jAddress" placeholder="Please input Eth address of the journal."></el-input>
                             </el-form-item>
                             <el-form-item>
                                 <el-button type="primary" :loading="voteOnJBtnLoadState" @click="submitForm('voteOnJForm')">Vote now</el-button>

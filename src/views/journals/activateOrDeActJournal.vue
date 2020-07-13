@@ -4,7 +4,14 @@
           <el-link icon="el-icon-arrow-left" style="font-size:17px;float:left;" @click="backToPrvPack">Previous Page</el-link>
         </div>
         <div class="formArea">
-            <h2>Journal activation and deactivation page</h2>
+          <el-row>
+            <el-col :span="2">
+              <img id="actOrDeActImg" src="../../assets/imgs/activateOrDeActJ.png" />
+            </el-col>
+            <el-col :span="18" :offset="1">
+              <h2>Journal activation and deactivation page</h2>
+            </el-col>
+          </el-row>
             <el-row>
                 <el-col :span="19">
                     <div class="grid-content bg-purple-dark">
@@ -249,4 +256,9 @@ export default {
   padding: 1rem 1.5rem;
 }
 
+#actOrDeActImg{
+    margin-top: 1.2rem;
+    width: 4rem;
+    height: 3rem;
+}
 </style>

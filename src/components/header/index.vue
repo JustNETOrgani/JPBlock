@@ -20,11 +20,10 @@
       <el-menu-item index="2-2"><el-link style="color:#fff" href="journals/updateJournal">Update Journal</el-link></el-menu-item>
       <el-menu-item index="2-3"><el-link style="color:#fff" href="journals/activateOrDeActJournal">Activate/Deactivate Journal</el-link></el-menu-item>
       <el-menu-item index="2-4"><el-link style="color:#fff" href="journals/reviewOrAccept">Push for Review/Acceptance</el-link></el-menu-item>
-      <el-menu-item index="2-5"><el-link style="color:#fff" href="journals/resubOrRejectPaper">Push for Re-submission</el-link></el-menu-item>
-      <el-menu-item index="2-6"><el-link style="color:#fff" href="journals/resubOrRejectPaper">Reject Paper</el-link></el-menu-item>
-      <el-menu-item index="2-7"><el-link style="color:#fff" href="journals/publishPaper">Publish Paper</el-link></el-menu-item>
-      <el-menu-item index="2-8"><el-link style="color:#fff" href="journals/jDashboard">Journal Dashboard</el-link></el-menu-item>
-      <el-menu-item index="2-9"><el-link style="color:#fff" href="journals/jBalanceCheck">Account Balance</el-link></el-menu-item>
+      <el-menu-item index="2-5"><el-link style="color:#fff" href="journals/resubOrRejectPaper">Paper Re-submission/Rejection</el-link></el-menu-item>
+      <el-menu-item index="2-6"><el-link style="color:#fff" href="journals/publishPaper">Publish Paper</el-link></el-menu-item>
+      <el-menu-item index="2-7"><el-link style="color:#fff" href="journals/jDashboard">Journal Dashboard</el-link></el-menu-item>
+      <el-menu-item index="2-8"><el-link style="color:#fff" href="journals/jBalanceCheck">Account Balance</el-link></el-menu-item>
     </el-submenu>
     <el-submenu index="3">
       <template slot="title">Author Tasks</template>
