@@ -356,7 +356,8 @@ export default {
                   this.$prompt('Please enter hash of the original paper if resubmitting.', 'Information required', {
                     confirmButtonText: 'Continue',
                     cancelButtonText: 'Cancel',
-                    inputPlaceholder: 'Click continue if not resubmitting.'
+                    inputPlaceholder: 'Click continue if not resubmitting.',
+                    inputPattern: /^0x[0-9A-F]{64}$/i
                   }).then(({ value }) => {
                     var origManuHash
                     if (value === '' || value === null) {
