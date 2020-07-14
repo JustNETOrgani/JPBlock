@@ -376,10 +376,7 @@ export default {
             })
           })
       } else {
-        this.$message({
-          showClose: true,
-          message: 'Invalid hash. Please, first, enter the hash of the original file and try again.'
-        })
+        this.$message.warning('Invalid hash. Please, first, enter the hash of the original file and re-upload file.')
       }
     },
     resManuscriptFileExtractor (file) {
@@ -481,7 +478,7 @@ export default {
       console.log(file, fileList)
     },
     beforeRemove (file, fileList) {
-      return this.$confirm(`Cancel the transfert of ${file.name} ?`)
+      return this.$confirm(`Cancel the transfer of ${file.name} ?`)
     },
     onRadioSelect (data) {
       this.radio = data
