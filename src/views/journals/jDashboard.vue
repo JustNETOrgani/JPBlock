@@ -301,7 +301,20 @@ export default {
               return
             } else if (this.jBoardTasks.jTask === 'sendPaperToUser') {
               // console.log('Preparing for send paper to user procedure.')
-              this.captureSendPaperToUserDialog = true
+              if (this.reqIPFShashes.length === 0) {
+                this.defaultPageItem = true
+                this.$alert('There exist no requested paper to be sent.', 'Status of requested papers.', {
+                  confirmButtonText: 'OK',
+                  callback: action => {
+                    this.$message({
+                      type: 'info',
+                      message: `action: ${action}`
+                    })
+                  }
+                })
+              } else {
+                this.captureSendPaperToUserDialog = true
+              }
             }
             this.jDashboardTaskBtnLoadState = false
           } else {
@@ -463,8 +476,21 @@ export default {
       // Set load button to false.
       this.jDashboardTaskBtnLoadState = false
       this.reqPapersLoading = false
-      // Just display since it's table data was populated on page creation.
-      this.reqPaper = true // 6
+      if (this.reqIPFShashes.length === 0) {
+        this.defaultPageItem = true // 1
+        this.$alert('There are no requested papers yet.', 'Status of requested papers.', {
+          confirmButtonText: 'OK',
+          callback: action => {
+            this.$message({
+              type: 'info',
+              message: `action: ${action}`
+            })
+          }
+        })
+      } else {
+        // Just display since it's table data was populated on page creation.
+        this.reqPaper = true // 6
+      }
     },
     getSendPaperToUser () {
       this.jDashboardTaskBtnLoadState = true
