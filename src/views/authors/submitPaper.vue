@@ -4,7 +4,8 @@
           <el-link icon="el-icon-arrow-left" style="font-size:17px;float:left;" @click="backToPrvPack">Previous Page</el-link>
         </div>
         <div class="body" v-loading="loadingData">
-            <h3 id="pageInfo">Welcome to Paper Submission. Upload files and fill the form.</h3>
+            <h3 id="pageInfo">Welcome to Paper Submission/Resubmission</h3>
+            <h4>Please upload files and fill the form</h4>
             <el-row>
                 <el-col :span="22">
                     <div class="grid-content bg-purple-dark">
@@ -123,19 +124,19 @@
                         </el-row>
                         <el-col :span="20" :offset="3">
                         <el-row>
-                            <el-form-item>
+                            <el-col>
                                 <el-col :span="8" :offset="1">
                                     <p><i>Choice of publication when accepted.</i></p>
-                                    <el-radio-group v-model="authorSubForm.radio" @input="onRadioSelect">
-                                        <el-radio label="1">Open Access.</el-radio>
-                                        <el-radio label="0">Non Open Access.</el-radio>
+                                    <el-radio-group v-model="radio" @input="onRadioSelect">
+                                        <el-radio label="1">Open Access</el-radio>
+                                        <el-radio label="0">Non Open Access</el-radio>
                                     </el-radio-group>
                                 </el-col>
                                 <el-col :span="8" :offset="1">
                                     <p><i>**Author consent**</i></p>
-                                    <el-checkbox v-model="authorSubForm.authCheckBox">I have checked the authenticity of the above provided details.</el-checkbox>
+                                    <el-checkbox v-model="authCheckBox">I have checked the authenticity of the above provided details.</el-checkbox>
                                 </el-col>
-                            </el-form-item>
+                            </el-col>
                         </el-row>
                         </el-col>
                         <el-form-item>
@@ -200,10 +201,10 @@ export default {
         authorsIDs: '',
         namesOfAuthors: '',
         jEthAddress: '',
-        jName: '',
-        radio: '1',
-        uthCheckBox: ''
+        jName: ''
       },
+      radio: '0',
+      authCheckBox: '',
       hashedIDsOfAuthors: '',
       hashedNamesOfAuthors: '',
       pubKeyOfJournal: '',
@@ -342,8 +343,8 @@ export default {
               authorNamesHashed: this.hashedNamesOfAuthors,
               jAddress: this.authorSubForm.jEthAddress,
               jName: this.authorSubForm.jName.name,
-              pubChoice: this.authorSubForm.radio,
-              chkBox: this.authorSubForm.authCheckBox
+              pubChoice: this.radio,
+              chkBox: this.authCheckBox
             }
             // Set submit loading state to true.
             this.authorSubBtnLoadState = true
@@ -643,5 +644,7 @@ legend {
 .btnSection{
     margin-top: 1rem;
 }
+
+h4{ color: rgb(15, 91, 94); font-style: italic;}
 
 </style>
