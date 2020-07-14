@@ -12,7 +12,7 @@
             <h2>Voting on Journal's reputation</h2>
             <p>This pushes upwards the reputation of a Journal.</p>
             <el-row>
-                <el-col :span="23" :offset="1">
+                <el-col :span="20" :offset="2">
                     <div class="grid-content bg-purple-dark">
                         <el-form
                             :model="voteOnJForm"
