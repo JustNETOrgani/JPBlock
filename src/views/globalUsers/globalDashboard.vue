@@ -102,7 +102,7 @@
                 <h4>{{totalRegJ}}</h4>
               </el-col>
                 <el-table
-                :data="pageTableData"
+                :data="pageTableData.filter(data => !search || data.jName.toLowerCase().includes(search.toLowerCase()))"
                 style="width: 100%"
                 height="450px"
                 >
@@ -114,6 +114,15 @@
                     :label="item.label" :width="item.width">
                   </el-table-column>
                 </template>
+                <el-table-column
+                  align="right">
+                  <template slot="header">
+                    <el-input
+                      v-model="search"
+                      size="mini"
+                      placeholder="Search by Journal's name"/>
+                  </template>
+                </el-table-column>
               </el-table>
             </div>
             <div v-else-if="defaultPageItem">
@@ -155,6 +164,7 @@ export default {
       userAccountIndexEntered: '',
       totalRegJ: '',
       pageTableData: [],
+      search: '',
       gUserData: false,
       jDetails: false,
       gUserNonOAdata: false,
