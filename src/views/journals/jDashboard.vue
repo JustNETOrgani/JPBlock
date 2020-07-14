@@ -526,7 +526,8 @@ export default {
                     this.$prompt('Please enter user public key to encrypt data.', 'Information required', {
                       confirmButtonText: 'Continue',
                       cancelButtonText: 'Cancel',
-                      inputPlaceholder: 'Encryption key.'
+                      inputPlaceholder: 'Encryption key.',
+                      inputPattern: /^0x[0-9A-F]{64}$/i
                     }).then(({ value }) => {
                       var userPubKey = this.convertHextoBytes(value.substring(2))
                       // Create key pair.
