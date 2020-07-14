@@ -313,6 +313,7 @@ export default {
             this.pageTableData[i].OApapers = getIPFSstring(res[i])
             this.gUserPageLoading = false
             this.gUserBtnLoadState = false
+            this.defaultPageItem = false
             this.gUserData = true
           }
         } else {
@@ -345,12 +346,13 @@ export default {
           console.log('Contract instance created.')
           jpBlockContract.getPastEvents('restrictedPaperPublished', { filter: { jAdd: [value] }, fromBlock: 0, toBlock: 'latest' },
             (err, results) => {
+              console.log('Total entries: ', Object.keys(results).length)
               if (err) {
                 this.gUserNonOApageLoading = false
                 this.gUserBtnLoadState = false
                 this.$message.error('Sorry! Error retrieving data. Please, try again later.')
               } else {
-                if (Object.keys(results) > 0) {
+                if (Object.keys(results).length > 0) {
                   for (let i = 0; i < Object.keys(results).length; i++) {
                     this.pageTableData[i] = []
                     this.pageTableData[i].paperTitle = web3.utils.hexToUtf8(results[i].returnValues.paperTitle)
@@ -358,6 +360,7 @@ export default {
                   }
                   this.gUserNonOApageLoading = false
                   this.gUserBtnLoadState = false
+                  this.defaultPageItem = false
                   this.gUserNonOAdata = true
                 } else {
                   this.gUserNonOApageLoading = false
@@ -412,6 +415,7 @@ export default {
               }
               this.jDetailspageLoading = false
               this.gUserBtnLoadState = false
+              this.defaultPageItem = false
               this.jDetails = true
             } else {
               this.jDetailspageLoading = false
@@ -448,6 +452,7 @@ export default {
           this.totalRegJ = res[0]
           this.regJsPageLoading = false
           this.gUserBtnLoadState = false
+          this.defaultPageItem = false
           this.regJournalsData = true
         } else {
           this.regJsPageLoading = false
