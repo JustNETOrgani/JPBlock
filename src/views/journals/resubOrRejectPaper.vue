@@ -15,7 +15,7 @@
               <img class="resubOrRejectImgs" src="../../assets/imgs/paperRejectOne.png" />
             </el-col>
           </el-row>
-            <h2>Journal paper resubmission and rejection</h2>
+            <h2>Journal paper resubmission or rejection</h2>
             <el-row>
                 <el-col :span="22">
                     <div class="grid-content bg-purple-dark">
@@ -264,7 +264,8 @@ export default {
       console.log('Reason file: ', file)
       this.$prompt('Please input public key of the submitting author.', 'Information required', {
         confirmButtonText: 'OK',
-        cancelButtonText: 'Cancel'
+        cancelButtonText: 'Cancel',
+        inputPattern: /^0x[0-9A-F]{64}$/i
       }).then(({ value }) => {
         // Valid Public key before proceeding.
         this.pubKeyOfSubAuthor = this.convertHextoBytes(value.substring(2))
@@ -290,6 +291,7 @@ export default {
         // console.log('Response object from IPFS: ', res)
         // console.log('Returned hash: ', res[0].hash)
         console.log('Data upload to IPFS sucessful')
+        this.$message('File upload success.')
         this.ipfsHashOfUploadedReasonFIle = res[0].hash
       })
     },
