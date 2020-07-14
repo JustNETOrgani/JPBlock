@@ -30,7 +30,7 @@
                                 <el-input v-model="proveOfAuthForm.namesOfAuthors" placeholder="Please enter the name(s) of the author(s)."></el-input>
                             </el-form-item>
                             <el-form-item label="ID(s) of Author(s)" prop="idsOfAuthors">
-                                <el-input v-model="proveOfAuthForm.idsOfAuthors" placeholder="Please enter the name(s) of the author(s)."></el-input>
+                                <el-input v-model="proveOfAuthForm.idsOfAuthors" placeholder="Please enter the ID(s) of the author(s)."></el-input>
                             </el-form-item>
                             <el-form-item>
                                 <el-button type="primary" :loading="proveAuthBtnLoadState" @click="submitForm('proveOfAuthForm')">Get proof</el-button>
@@ -131,7 +131,8 @@ export default {
                 console.log('Contract instance created.')
                 // Smart contract and other logic continues.
                 jpBlockContract.methods.proveAuthorship(data.paperHash, data.paperTitle, hashedNames, hashedIDs).call({ from: web3.eth.defaultAccount }).then(res => {
-                  if (res === 1) {
+                  console.log('Response from Contract: ', res)
+                  if (parseInt(res) === 1) {
                     this.proveAuthBtnLoadState = false
                     this.$alert('Congratulations. Proof Successful. This is a published paper.', 'Result of prove of authorship', {
                       confirmButtonText: 'OK',
@@ -142,10 +143,9 @@ export default {
                         })
                       }
                     })
-                  }
-                  if (res === 2) {
+                  } else if (parseInt(res) === 2) {
                     this.proveAuthBtnLoadState = false
-                    this.$alert('Congratulations. Proof Successful.Paper has been accepted for publication.', 'Result of prove of authorship', {
+                    this.$alert('Congratulations. Proof Successful. Paper has been accepted for publication.', 'Result of prove of authorship', {
                       confirmButtonText: 'OK',
                       callback: action => {
                         this.$message({
@@ -154,10 +154,9 @@ export default {
                         })
                       }
                     })
-                  }
-                  if (res === 3) {
+                  } else if (parseInt(res) === 3) {
                     this.proveAuthBtnLoadState = false
-                    this.$alert('Congratulations. Proof Successful.Paper is under review.', 'Result of prove of authorship', {
+                    this.$alert('Congratulations. Proof Successful. Paper is under review.', 'Result of prove of authorship', {
                       confirmButtonText: 'OK',
                       callback: action => {
                         this.$message({
@@ -166,10 +165,9 @@ export default {
                         })
                       }
                     })
-                  }
-                  if (res === 4) {
+                  } else if (parseInt(res) === 4) {
                     this.proveAuthBtnLoadState = false
-                    this.$alert('Congratulations. Proof Successful.Paper has been submitted to a Journal.', 'Result of prove of authorship', {
+                    this.$alert('Congratulations. Proof Successful. Paper has been submitted to a Journal.', 'Result of prove of authorship', {
                       confirmButtonText: 'OK',
                       callback: action => {
                         this.$message({
@@ -178,10 +176,9 @@ export default {
                         })
                       }
                     })
-                  }
-                  if (res === 5) {
+                  } else if (parseInt(res) === 5) {
                     this.proveAuthBtnLoadState = false
-                    this.$alert('Congratulations. Proof Successful.This is a rejected paper.', 'Result of prove of authorship', {
+                    this.$alert('Congratulations. Proof Successful. This is a rejected paper.', 'Result of prove of authorship', {
                       confirmButtonText: 'OK',
                       callback: action => {
                         this.$message({
@@ -190,10 +187,9 @@ export default {
                         })
                       }
                     })
-                  }
-                  if (res === 6) {
+                  } else if (parseInt(res) === 6) {
                     this.proveAuthBtnLoadState = false
-                    this.$alert('Congratulations. Proof Successful.Paper to be revised and resubmitted.', 'Result of prove of authorship', {
+                    this.$alert('Congratulations. Proof Successful. Paper to be revised and resubmitted.', 'Result of prove of authorship', {
                       confirmButtonText: 'OK',
                       callback: action => {
                         this.$message({
@@ -202,10 +198,9 @@ export default {
                         })
                       }
                     })
-                  }
-                  if (res === 7) {
+                  } else if (parseInt(res) === 7) {
                     this.proveAuthBtnLoadState = false
-                    this.$alert('Congratulations. Proof Successful.This is a revised and resubmitted paper.', 'Result of prove of authorship', {
+                    this.$alert('Congratulations. Proof Successful. This is a revised and resubmitted paper.', 'Result of prove of authorship', {
                       confirmButtonText: 'OK',
                       callback: action => {
                         this.$message({
@@ -214,9 +209,9 @@ export default {
                         })
                       }
                     })
-                  } else {
+                  } else if (parseInt(res) === 0) {
                     this.proveAuthBtnLoadState = false
-                    this.$alert('Sorry! You Failed Proof Checks.', 'Result of prove of authorship', {
+                    this.$alert('Sorry! You Failed Proof Verification.', 'Result of prove of authorship', {
                       confirmButtonText: 'OK',
                       callback: action => {
                         this.$message({
