@@ -85,21 +85,7 @@
                 height="450px"
                 >
                 <!--Building table body-->
-                <template v-for="(item, index) in jDetailsOneDataLabel">
-                  <el-table-column
-                    :key="index"
-                    :prop="item.prop"
-                    :label="item.label" :width="item.width">
-                  </el-table-column>
-                </template>
-              </el-table>
-              <el-table
-                :data="pageTableData"
-                style="width: 100%"
-                height="450px"
-                >
-                <!--Building table body-->
-                <template v-for="(item, index) in jDetailsTwoDataLabel">
+                <template v-for="(item, index) in jDetailsDataLabel">
                   <el-table-column
                     :key="index"
                     :prop="item.prop"
@@ -109,6 +95,12 @@
               </el-table>
             </div>
             <div v-if="regJournalsData" v-loading="regJsPageLoading">
+              <el-col :span="8">
+                <h3>Total number of registered Journals:</h3>
+              </el-col>
+              <el-col :span="2">
+                <h4>{{totalRegJ}}</h4>
+              </el-col>
                 <el-table
                 :data="pageTableData"
                 style="width: 100%"
@@ -161,6 +153,7 @@ export default {
       },
       userAccountNumForm: { accountNum: '' },
       userAccountIndexEntered: '',
+      totalRegJ: '',
       pageTableData: [],
       gUserData: false,
       jDetails: false,
@@ -191,23 +184,21 @@ export default {
         { label: 'Title of paper', prop: 'paperTitle', width: '300px' },
         { label: 'IPFS hashes of non Open Access publications', prop: 'paperIPFSHash', width: '420px' }
       ],
-      jDetailsOneDataLabel: [
-        { label: 'Name of Journal', prop: 'jName', width: '180px' },
-        { label: 'URL of Journal', prop: 'jURL', width: '310px' },
-        { label: 'State of Journal', prop: 'jState', width: '180px' },
-        { label: 'Public Key of Journal', prop: 'jPubKey', width: '310px' }
-      ],
-      jDetailsTwoDataLabel: [
-        { label: 'Reputation of Journal', prop: 'jReputationScore', width: '200px' },
-        { label: 'Impact Factor', prop: 'jIF', width: '150px' },
-        { label: 'Total publication', prop: 'jTotalPub', width: '210px' },
-        { label: 'OA price', prop: 'jOAprice', width: '120px' },
-        { label: 'Non-OA price', prop: 'jnOAprice', width: '140px' },
-        { label: 'Request paper (Eth)', prop: 'jReqPrice', width: '140px' }
+      jDetailsDataLabel: [
+        { label: 'Name of Journal', prop: 'jName', width: '150px' },
+        { label: 'URL of Journal', prop: 'jURL', width: '190px' },
+        { label: 'State of Journal', prop: 'jState', width: '150px' },
+        { label: 'Public Key of Journal', prop: 'jPubKey', width: '300px' },
+        { label: 'Reputation score', prop: 'jReputationScore', width: '100px' },
+        { label: 'Impact Factor', prop: 'jIF', width: '80px' },
+        { label: 'Publications', prop: 'jTotalPub', width: '110px' },
+        { label: 'OA price', prop: 'jOAprice', width: '100px' },
+        { label: 'Non-OA price', prop: 'jnOAprice', width: '90px' },
+        { label: 'Request paper (Eth)', prop: 'jReqPrice', width: '125px' }
       ],
       regJournalsDataLabel: [
-        { label: 'Number of registered journals', prop: 'numOfJs', width: '250px' },
-        { label: 'Eth address of journals', prop: 'jAdds', width: '360px' }
+        { label: 'Name of journal', prop: 'jName', width: '360px' },
+        { label: 'Eth address of journal', prop: 'jAdd', width: '380px' }
       ]
       // Table labels end.
     }
@@ -307,7 +298,7 @@ export default {
       console.log('Contract instance created.')
       jpBlockContract.methods.getOpenAccesspapers().call({ from: web3.eth.defaultAccount }).then(res => {
         if (res.length > 0) {
-          for (let i = 0; res.length; i++) {
+          for (let i = 0; i < res.length; i++) {
             this.pageTableData[i] = []
             this.pageTableData[i].OApapers = getIPFSstring(res[i])
             this.gUserPageLoading = false
@@ -361,7 +352,7 @@ export default {
                 } else {
                   this.gUserNonOApageLoading = false
                   this.gUserBtnLoadState = false
-                  this.$alert('This journal has no non-OA Publications.', 'Status of non-Open Access papers.', {
+                  this.$alert('This journal has no non-OA Publications yet.', 'Status of non-Open Access papers.', {
                     confirmButtonText: 'OK',
                     callback: action => {
                       this.$message({
@@ -394,8 +385,10 @@ export default {
           var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
           console.log('Contract instance created.')
           jpBlockContract.methods.getAjournalDetail(value).call({ from: web3.eth.defaultAccount }).then(res => {
-            if (res.length > 0) {
-              for (let i = 0; res.length; i++) {
+            // console.log('Total elements: ', Object.keys(res).length)
+            if (Object.keys(res).length > 0) {
+              for (let i = 0; i < 1; i++) {
+                this.pageTableData[i] = []
                 this.pageTableData[i].jName = web3.utils.hexToAscii(res[0]).replace(/[^a-z]/gi, '')
                 this.pageTableData[i].jURL = res[1]
                 this.pageTableData[i].jState = res[2]
@@ -435,11 +428,14 @@ export default {
       var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
       console.log('Contract instance created.')
       jpBlockContract.methods.getRegisteredJournals().call({ from: web3.eth.defaultAccount }).then(res => {
-        if (res.length > 0) {
-          for (let i = 0; res.length; i++) {
-            this.pageTableData[i].numOfJs = res[0]
-            this.pageTableData[i].jAdds = res[1]
+        console.log('Number of Journals: ', res[0])
+        if (res[0] > 0) {
+          for (let i = 0; i < res[1].length; i++) {
+            this.pageTableData[i] = []
+            this.pageTableData[i].jName = web3.utils.hexToAscii(res[2][i]).replace(/[^\w\s]/gi, '')
+            this.pageTableData[i].jAdd = res[1][i]
           }
+          this.totalRegJ = res[0]
           this.regJsPageLoading = false
           this.gUserBtnLoadState = false
           this.regJournalsData = true
