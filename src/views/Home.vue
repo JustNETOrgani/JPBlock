@@ -67,7 +67,7 @@ export default {
   },
   methods: {
     startRotation: function () {
-      this.timer = setInterval(this.next, 5000)
+      this.timer = setInterval(this.next, 3000)
     },
 
     stopRotation: function () {
@@ -148,6 +148,8 @@ img {
 .prev:hover, .next:hover {
   background-color: rgba(0,0,0,0.9);
 }
+
+a{text-decoration: none;}
 
 #footerDiv {
   position: absolute;
