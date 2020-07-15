@@ -5,24 +5,24 @@
         <el-col :span="5">
             <div class="grid-content bg-purple-dark">
                 <span id="ftLeftSpanOne">
-                    <p class="quickLinks"><a href="./index.html">Home</a></p>
-                    <p class="quickLinks"><a href="proveOfAuthorship">Prove Authorship</a></p>
+                    <p class="quickLinks"><a href="/">Home</a></p>
+                    <p class="quickLinks"><a href="/proveOfAuthorship">Prove Authorship</a></p>
                 </span>
             </div>
         </el-col>
         <el-col :span="5">
           <div class="grid-content bg-purple-dark">
               <span id="ftLeftSpanTwo">
-                    <p class="quickLinks"><a href="./submitPaperToJ.html">Submit Manuscript</a></p>
-                    <p class="quickLinks"><a href="./paperTracking.html">TrackManuscript</a></p>
+                    <p class="quickLinks"><a href="/authors/submitPaper">Submit Manuscript</a></p>
+                    <p class="quickLinks"><a href="/paperTrackingService">Track Manuscript</a></p>
                 </span>
           </div>
         </el-col>
         <el-col :span="5">
           <div class="grid-content bg-purple-dark">
                 <span id="ftLeftSpanThree">
-                    <p class="quickLinks"><a href="./authorProfile.html">Author Works</a></p>
-                    <p class="quickLinks"><a href="./statisticsPage.html">Check Open Access</a></p>
+                    <p class="quickLinks"><a href="/authorProfile">Author Works</a></p>
+                    <p class="quickLinks"><a href="/globalUsers/globalDashboard">Check Open Access</a></p>
                 </span>
             </div>
         </el-col>
@@ -62,7 +62,7 @@
           <el-col :span="24">
             <div class="grid-content bg-purple-dark">
                     <div id="footerBottom">
-                        <p><u>JPBlock designed by JustNET from SWUST - P. R. CHINA</u></p>
+                        <p><u>JPBlock: Designed by JustNET from SWUST - P. R. CHINA</u></p>
                         <p class="h6">Copyright © {{currentYear}} JPBLOCK. All rights reserved.</p>
                     </div>
             </div>
