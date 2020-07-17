@@ -48,6 +48,7 @@
           <el-col :span="24" :offset="0">
             <div v-if="gUserData" v-loading="gUserPageLoading">
                 <el-table
+                align="center"
                 :data="pageTableData"
                 style="width: 100%"
                 height="450px"
@@ -71,6 +72,7 @@
                 <!--Building table body-->
                 <template v-for="(item, index) in gUserNonOAdataLabel">
                   <el-table-column
+                    align="center"
                     :key="index"
                     :prop="item.prop"
                     :label="item.label" :width="item.width">
@@ -87,6 +89,7 @@
                 <!--Building table body-->
                 <template v-for="(item, index) in jDetailsDataLabel">
                   <el-table-column
+                  align="center"
                     :key="index"
                     :prop="item.prop"
                     :label="item.label" :width="item.width">
@@ -196,14 +199,14 @@ export default {
       ],
       jDetailsDataLabel: [
         { label: 'Name of Journal', prop: 'jName', width: '150px' },
-        { label: 'URL of Journal', prop: 'jURL', width: '190px' },
+        { label: 'URL of Journal', prop: 'jURL', width: '210px' },
         { label: 'State of Journal', prop: 'jState', width: '150px' },
         { label: 'Public Key of Journal', prop: 'jPubKey', width: '300px' },
         { label: 'Reputation score', prop: 'jReputationScore', width: '100px' },
         { label: 'Impact Factor', prop: 'jIF', width: '80px' },
         { label: 'Publications', prop: 'jTotalPub', width: '110px' },
-        { label: 'OA price', prop: 'jOAprice', width: '100px' },
-        { label: 'Non-OA price', prop: 'jnOAprice', width: '90px' },
+        { label: 'OA price (Eth)', prop: 'jOAprice', width: '90px' },
+        { label: 'Non-OA price (Eth)', prop: 'jnOAprice', width: '125px' },
         { label: 'Request paper (Eth)', prop: 'jReqPrice', width: '125px' }
       ],
       regJournalsDataLabel: [
