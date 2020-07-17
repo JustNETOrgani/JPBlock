@@ -74,8 +74,15 @@ export default {
       console.log('Contract instance created.')
       // Smart contract and other logic continues.
       jpBlockContract.methods.getAmtAccrued().call({ from: web3.eth.defaultAccount }).then(res => {
-        this.getAccBalLoadBtn = false
-        this.jAccountBalance = web3.utils.fromWei(res, 'ether') + ' Ether'
+        console.log('Response from contract: ', res)
+        web3.eth.getBalance(web3.eth.defaultAccount).then(result => {
+          this.getAccBalLoadBtn = false
+          this.jAccountBalance = web3.utils.fromWei(result, 'ether') + ' ETH'
+        }).catch((err) => {
+          console.log('Ooops! Error.', err)
+          this.getAccBalLoadBtn = false
+          this.$message.error('Sorry! Transaction error. Please, try again later.')
+        })
       }).catch((error) => {
         console.log('Error occurred.', error)
         this.getAccBalLoadBtn = false
