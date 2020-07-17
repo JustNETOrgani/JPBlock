@@ -83,8 +83,8 @@ export default {
   },
   computed: {
     currentImage () {
-      const imgIndexToDisplay = this.images[Math.abs(this.currentNumber) % this.images.length]
-      console.log('ImgIndexToUse: ', imgIndexToDisplay)
+      // const imgIndexToDisplay = this.images[Math.abs(this.currentNumber) % this.images.length]
+      // console.log('ImgIndexToUse: ', imgIndexToDisplay)
       return this.images[Math.abs(this.currentNumber) % this.images.length]
     }
   }
