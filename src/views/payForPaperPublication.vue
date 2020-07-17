@@ -108,7 +108,7 @@ export default {
             var data = {
               paperHash: this.payAcceptedpaperForm.paperHash,
               jEthAddress: this.payAcceptedpaperForm.jEthAddress,
-              pubCost: (this.payAcceptedpaperForm.pubFee) * 1000000000 // Gwei
+              pubCost: ((this.payAcceptedpaperForm.pubFee) * 1000000000000000000).toString() // Ether
             }
             if (web3.utils.isAddress(data.jEthAddress) === true) {
               if (this.hashInputValidation(data.paperHash) === 1) {

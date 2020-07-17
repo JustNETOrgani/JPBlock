@@ -111,7 +111,7 @@ export default {
             var data = {
               paperIPFShash: this.payToGetPubPaperForm.ipfsHashOfPaperToGet,
               userPubKey: this.payToGetPubPaperForm.userPubKey,
-              subFee: (this.payToGetPubPaperForm.subFee) * 1000000000 // Gwei
+              subFee: ((this.payToGetPubPaperForm.subFee) * 1000000000000000000).toString() // Ether
             }
             if (this.ipfsInputValidation(data.paperIPFShash) === 1) {
               data.paperIPFShash = convertIPFSstringToBytes(data.paperIPFShash)
