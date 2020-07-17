@@ -151,40 +151,35 @@ export default {
                     jName: web3.utils.asciiToHex(this.jCreateForm.jName),
                     jURL: this.jCreateForm.jURL,
                     jIF: this.jCreateForm.jIF,
-                    jOAPrice: (this.jCreateForm.jOAPrice) * 1000000000, // 1000000000 Gwei
-                    jnOAPrice: (this.jCreateForm.jnOAPrice) * 1000000000,
-                    jRestrictedPrice: (this.jCreateForm.jRestrictedPrice) * 1000000000,
+                    jOAPrice: ((this.jCreateForm.jOAPrice) * 1000000000000000000).toString(), // 1000000000 Gwei  1000000000000000000 is 1 Ether.
+                    jnOAPrice: ((this.jCreateForm.jnOAPrice) * 1000000000000000000).toString(),
+                    jRestrictedPrice: ((this.jCreateForm.jRestrictedPrice) * 1000000000000000000).toString(),
                     jPubKey: this.jCreateForm.jPubKey
                   }
                   console.log('J creation data: ', data)
                   var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
                   console.log('Contract instance created.')
                   // Smart contract and other logic continues.
-                  try {
-                    jpBlockContract.methods.createJournal(data.jName, data.jURL, data.jIF, data.jOAPrice, data.jnOAPrice, data.jRestrictedPrice, data.jPubKey).send({
-                      from: web3.eth.defaultAccount,
-                      gas: 310000
-                    }).on('transactionHash', (hash) => {
-                      console.log('Trans. hash is: ', hash)
-                    }).on('receipt', (receipt) => {
-                      console.log('Trans. Block Number is: ', receipt.blockNumber)
-                      // Display success note.
-                      this.jCreateBtnLoadState = false
-                      this.$message({
-                        message: 'Congratulations. Journal created successfully.',
-                        type: 'success'
-                      })
-                      this.$router.push('/')
-                    }).on('error', (error) => {
-                      console.log('Error occured', error)
-                      this.jCreateBtnLoadState = false
-                      this.$message.error('Oops. Eror occured during transaction processing.')
-                    })
-                  } catch {
-                    console.log('Sorry! Error occured.')
+                  console.log('Data type: ', typeof (data.jOAPrice))
+                  jpBlockContract.methods.createJournal(data.jName, data.jURL, data.jIF, data.jOAPrice, data.jnOAPrice, data.jRestrictedPrice, data.jPubKey).send({
+                    from: web3.eth.defaultAccount,
+                    gas: 310000
+                  }).on('transactionHash', (hash) => {
+                    console.log('Trans. hash is: ', hash)
+                  }).on('receipt', (receipt) => {
+                    console.log('Trans. Block Number is: ', receipt.blockNumber)
+                    // Display success note.
                     this.jCreateBtnLoadState = false
-                    this.$message.error('Non-transactional error. Please try again later.')
-                  }
+                    this.$message({
+                      message: 'Congratulations. Journal created successfully.',
+                      type: 'success'
+                    })
+                    this.$router.push('/')
+                  }).on('error', (error) => {
+                    console.log('Error occured', error)
+                    this.jCreateBtnLoadState = false
+                    this.$message.error('Oops. Eror occured during transaction processing.')
+                  })
                 } else {
                   this.jCreateBtnLoadState = false
                   this.$message('Invalid Public Key.')
