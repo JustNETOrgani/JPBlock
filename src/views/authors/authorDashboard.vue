@@ -261,23 +261,17 @@ export default {
             // Call different methods here based on journal's selection.
             if (this.authorBoardTasks.authorTask === 'submittedPapers') {
               this.getSubmittedPapers()
-              return
             } else if (this.authorBoardTasks.authorTask === 'acceptedPapers') {
               this.getAcceptedPapers()
-              return
             } else if (this.authorBoardTasks.authorTask === 'papersToRevise') {
               this.getPapersToRevise()
-              return
             } else if (this.authorBoardTasks.authorTask === 'rejectedPapers') {
               this.getRejectedPapers()
-              return
             } else if (this.authorBoardTasks.authorTask === 'recPaidPapers') {
               this.getReceivedPaidPapers()
-              return
             } else if (this.authorBoardTasks.authorTask === 'publishedRestrictedPapers') {
               this.getPublishedResPapers()
             }
-            this.authorDashboardTaskBtnLoadState = false
           } else {
             console.log('Submission error.')
             this.authorDashboardTaskBtnLoadState = false
@@ -532,7 +526,8 @@ export default {
       this.$prompt('Please enter Ethereum address of the Journal.', 'Information required', {
         confirmButtonText: 'Continue',
         cancelButtonText: 'Cancel',
-        inputPlaceholder: 'Eth address of the journal.'
+        inputPlaceholder: 'Eth address of the journal.',
+        inputPattern: /^0x[0-9A-F]{40}$/i
       }).then(({ value }) => {
         if (web3.utils.isAddress(value) === true) {
           var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
