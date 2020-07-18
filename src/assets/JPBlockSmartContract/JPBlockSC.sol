@@ -358,9 +358,9 @@ contract JPBlock{
     }
     
     // Function for Journals to get the total amount accrued on JPBlock.
-    function getAmtAccrued() public view returns (uint256){
+    function getAmtAccrued() public view returns (uint8){
         require(jMap[msg.sender].jAdd == msg.sender); // Ensures that only members known to jMap can check their balance.
-        return address(msg.sender).balance;
+        return 1;
     }
     
     // Public function to retrieve author works.TODO.
