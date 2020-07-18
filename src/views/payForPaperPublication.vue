@@ -23,7 +23,7 @@
                             <el-form-item label="Journal's Eth address" prop="jEthAddress">
                                 <el-input v-model="payAcceptedpaperForm.jEthAddress" placeholder="Please enter the Eth address of the journal."></el-input>
                             </el-form-item>
-                            <el-form-item label="Publication cost (Gwei)" prop="pubFee">
+                            <el-form-item label="Publication cost (Eth)" prop="pubFee">
                                 <el-input-number v-model="payAcceptedpaperForm.pubFee"  :min="1"></el-input-number>
                             </el-form-item>
                             <el-form-item>

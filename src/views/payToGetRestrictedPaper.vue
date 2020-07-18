@@ -25,7 +25,7 @@
                             <el-form-item label="User's public key" prop="userPubKey">
                                 <el-input v-model="payToGetPubPaperForm.userPubKey" placeholder="Please enter your public key."></el-input>
                             </el-form-item>
-                            <el-form-item label="Subscription cost (Gwei)" prop="subFee">
+                            <el-form-item label="Subscription cost (Eth)" prop="subFee">
                                 <el-input-number v-model="payToGetPubPaperForm.subFee"  :min="1"></el-input-number>
                             </el-form-item>
                             <el-form-item>
