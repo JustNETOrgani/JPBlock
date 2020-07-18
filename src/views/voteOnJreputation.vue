@@ -73,7 +73,7 @@ export default {
       getUserAccountLoadState: false,
       rules: {
         authCheckBox: [
-          { required: true, message: 'Please input hash of the paper', trigger: 'blur' }
+          { required: true, message: 'Please check the checkbox', trigger: 'blur' }
         ],
         jAddress: [
           { required: true, message: 'Please input ethereum address of the journal.', trigger: 'blur' },
