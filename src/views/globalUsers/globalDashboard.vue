@@ -304,6 +304,7 @@ export default {
       })
     },
     getOAPapersOnJPBlock () {
+      this.pageTableData.splice(0, this.pageTableData.length) // Remove all previously stored values.
       this.jDetails = false
       this.gUserNonOAdata = false
       this.regJournalsData = false
@@ -335,6 +336,7 @@ export default {
       })
     },
     getPubNonOApapers () {
+      this.pageTableData.splice(0, this.pageTableData.length) // Remove all previously stored values.
       this.gUserData = false
       this.jDetails = false
       this.regJournalsData = false
@@ -388,6 +390,7 @@ export default {
       })
     },
     getAjournalDetail () {
+      this.pageTableData.splice(0, this.pageTableData.length) // Remove all previously stored values.
       this.gUserData = false
       this.gUserNonOAdata = false
       this.regJournalsData = false
@@ -439,6 +442,7 @@ export default {
       })
     },
     getRegJournals () {
+      this.pageTableData.splice(0, this.pageTableData.length) // Remove all previously stored values.
       this.gUserData = false
       this.gUserNonOAdata = false
       this.jDetails = false
