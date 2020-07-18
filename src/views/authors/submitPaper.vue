@@ -122,26 +122,22 @@
                                 </fieldset>
                             </el-col>
                         </el-row>
-                        <el-col :span="20" :offset="3">
-                        <el-row>
-                            <el-col>
-                                <el-col :span="8" :offset="1">
-                                    <p><i>Choice of publication when accepted.</i></p>
-                                    <el-radio-group v-model="radio" @input="onRadioSelect">
-                                        <el-radio label="1">Open Access</el-radio>
-                                        <el-radio label="0">Non Open Access</el-radio>
-                                    </el-radio-group>
-                                </el-col>
-                                <el-col :span="8" :offset="1">
-                                    <p><i>**Author consent**</i></p>
-                                    <el-checkbox v-model="authCheckBox">I have checked the authenticity of the above provided details.</el-checkbox>
-                                </el-col>
-                            </el-col>
-                        </el-row>
-                        </el-col>
                         <el-form-item>
+                          <el-col :span="8" :offset="1">
+                            <p class="pubChoiceAndConsentTxt"><i>Choice of publication when accepted.</i></p>
+                            <el-radio-group v-model="radio" @change="onRadioSelect">
+                              <el-radio label="1">Open Access</el-radio>
+                                <el-radio label="0">Non Open Access</el-radio>
+                              </el-radio-group>
+                          </el-col>
+                          <el-col :span="8" :offset="1">
+                            <p class="pubChoiceAndConsentTxt"><i>**Author consent**</i></p>
+                              <el-checkbox v-model="authCheckBox">I have checked the authenticity of the above provided details.</el-checkbox>
+                          </el-col>
+                          <div id="btnDIV">
                             <el-button class="btnSection" type="primary" :loading="authorSubBtnLoadState" @click="submitForm('authorSubForm')">Submit</el-button>
                             <el-button class="btnSection" @click="resetForm('authorSubForm')">Reset</el-button>
+                          </div>
                         </el-form-item>
                     </el-form>
                     </div>
@@ -203,7 +199,7 @@ export default {
         jEthAddress: '',
         jName: ''
       },
-      radio: '0',
+      radio: '',
       authCheckBox: '',
       hashedIDsOfAuthors: '',
       hashedNamesOfAuthors: '',
@@ -346,79 +342,83 @@ export default {
               pubChoice: this.radio,
               chkBox: this.authCheckBox
             }
+            if (data.pubChoice === '1' || data.pubChoice === '0') {
             // Set submit loading state to true.
-            this.authorSubBtnLoadState = true
-            console.log('Data to submit is: ', data)
-            if (data.chkBox === true) {
+              this.authorSubBtnLoadState = true
+              console.log('Data to submit is: ', data)
+              if (data.chkBox === true) {
               // User has checked validity of provided information. Proceed.
-              if (web3.utils.isAddress(data.jAddress) === true) {
-                if (data.jName.length !== 0) {
-                  this.$prompt('Please enter hash of the original paper if resubmitting.', 'Information required', {
-                    confirmButtonText: 'Continue',
-                    cancelButtonText: 'Cancel',
-                    inputPlaceholder: 'Click continue if not resubmitting.',
-                    inputPattern: /^0x[0-9A-F]{64}$/i
-                  }).then(({ value }) => {
-                    var origManuHash
-                    if (value === '' || value === null) {
-                      origManuHash = web3.utils.utf8ToHex('New Submission') // New submission hence not resubmitting.
-                      console.log('Proceeding as new submission.')
-                    } else if (this.hashInputValidation(value) === 0) {
-                      this.authorSubBtnLoadState = false
-                      this.$message('Invalid resubmitted manuscript hash.')
-                      return
-                    } else {
-                      origManuHash = value
-                    }
-                    console.log('All checks passed.')
-                    // All validation checks completed. Proceed to required conversions.
-                    var convertedJname = web3.utils.utf8ToHex(data.jName)
-                    var convertedPaperTitle = web3.utils.utf8ToHex(data.paperTitle)
-                    var convertedAuthorPubKey = this.convertBytesArrayToHex(this.authorPubKey)
-                    var convIPFSHashOfMainPaper = convertIPFSstringToBytes(data.ipfsHash_MainPaper)
-                    var convIPFSHashOfSupPaper = convertIPFSstringToBytes(data.ipfsHash_SupPaper)
-                    var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
-                    console.log('Contract instance created.')
-                    try {
-                      jpBlockContract.methods.submitPaper(origManuHash, data.hashOfPaper, convIPFSHashOfMainPaper,
-                        convIPFSHashOfSupPaper, convertedPaperTitle, this.hashedIDsOfAuthors, this.hashedNamesOfAuthors,
-                        data.jAddress, convertedJname, convertedAuthorPubKey, data.pubChoice).send({
-                        from: web3.eth.defaultAccount,
-                        gas: 450000 // Check gas issues.
-                      }).on('transactionHash', (hash) => {
-                        console.log('Trans. hash is: ', hash)
-                      }).on('receipt', (receipt) => {
-                        console.log('Trans. Block Number is: ', receipt.blockNumber)
-                        // Set submit loading state to false.
+                if (web3.utils.isAddress(data.jAddress) === true) {
+                  if (data.jName.length !== 0) {
+                    this.$prompt('Please enter hash of the original paper if resubmitting.', 'Information required', {
+                      confirmButtonText: 'Continue',
+                      cancelButtonText: 'Cancel',
+                      inputPlaceholder: 'Click continue if not resubmitting.'
+                    }).then(({ value }) => {
+                      var origManuHash
+                      if (value === '' || value === null) {
+                        origManuHash = web3.utils.utf8ToHex('New Submission') // New submission hence not resubmitting.
+                        console.log('Proceeding as new submission.')
+                      } else if (this.hashInputValidation(value) === 0) {
                         this.authorSubBtnLoadState = false
-                        this.$message({
-                          message: 'Paper submission successful.',
-                          type: 'success'
-                        })
-                        this.hashCopyAlertDialog = true
-                      }).on('error', (error) => {
-                        console.log('Error occured.', error)
-                        this.authorSubBtnLoadState = false
-                        this.$message.error('Sorry! Transaction error. Please, try again later.')
+                        this.$message('Invalid original manuscript hash. Please, resubmit form and reenter.')
+                        return
+                      } else {
+                        origManuHash = value
+                      }
+                      console.log('All checks passed.')
+                      // All validation checks completed. Proceed to required conversions.
+                      var convertedJname = web3.utils.utf8ToHex(data.jName)
+                      var convertedPaperTitle = web3.utils.utf8ToHex(data.paperTitle)
+                      var convertedAuthorPubKey = this.convertBytesArrayToHex(this.authorPubKey)
+                      var convIPFSHashOfMainPaper = convertIPFSstringToBytes(data.ipfsHash_MainPaper)
+                      var convIPFSHashOfSupPaper = convertIPFSstringToBytes(data.ipfsHash_SupPaper)
+                      var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
+                      console.log('Contract instance created.')
+                      try {
+                        jpBlockContract.methods.submitPaper(origManuHash, data.hashOfPaper, convIPFSHashOfMainPaper,
+                          convIPFSHashOfSupPaper, convertedPaperTitle, this.hashedIDsOfAuthors, this.hashedNamesOfAuthors,
+                          data.jAddress, convertedJname, convertedAuthorPubKey, data.pubChoice).send({
+                          from: web3.eth.defaultAccount,
+                          gas: 450000 // Check gas issues.
+                        }).on('transactionHash', (hash) => {
+                          console.log('Trans. hash is: ', hash)
+                        }).on('receipt', (receipt) => {
+                          console.log('Trans. Block Number is: ', receipt.blockNumber)
+                          // Set submit loading state to false.
+                          this.authorSubBtnLoadState = false
+                          this.$message({
+                            message: 'Paper submission successful.',
+                            type: 'success'
+                          })
+                          this.hashCopyAlertDialog = true
+                        }).on('error', (error) => {
+                          console.log('Error occured.', error)
+                          this.authorSubBtnLoadState = false
+                          this.$message.error('Sorry! Transaction error. Please, try again later.')
                         // window.location.reload()
-                      })
-                    } catch {
-                      console.log('Sorry! Error occured.')
-                      this.authorSubBtnLoadState = false
-                      this.$message.error('Sorry! Non-transactional. Please try again later.')
-                    }
-                  }) // Then ends here.
+                        })
+                      } catch {
+                        console.log('Sorry! Error occured.')
+                        this.authorSubBtnLoadState = false
+                        this.$message.error('Sorry! Non-transactional. Please try again later.')
+                      }
+                    }) // Then ends here.
+                  } else {
+                    this.authorSubBtnLoadState = false
+                    this.$message('Please select the name of the journal from the dropdown box.')
+                  }
                 } else {
                   this.authorSubBtnLoadState = false
-                  this.$message('Please select the name of the journal from the dropdown box.')
+                  this.$message('Invalid Ethereum address entered. Please, reenter.')
                 }
               } else {
                 this.authorSubBtnLoadState = false
-                this.$message('Invalid Ethereum address entered. Please, reenter.')
+                this.$message('Please check the checkbox.')
               }
             } else {
               this.authorSubBtnLoadState = false
-              this.$message('Please check the checkbox.')
+              this.$message('Please select publication choice radio button.')
             }
           } else {
             console.log('Submission error.')
@@ -434,19 +434,11 @@ export default {
     resetForm (formName) {
       this.$refs[formName].resetFields()
     },
-    jNameValidation (input) {
-      if (input === '' || /[^a-zA-Z]/.test(input) === true || input == null) {
-        return 0
-      } else {
-        return 1
-      }
-    },
     hashInputValidation (input) {
-      const count = input.toString().length
-      if (isNaN(input) === true || input < 0 || count <= 63) {
-        return 0
-      } else {
+      if (/^0x[0-9A-F]{64}$/i.test(input) === true) {
         return 1
+      } else {
+        return 0
       }
     },
     getAccountOnPageLoad (formName) {
@@ -583,7 +575,7 @@ export default {
     },
     onRadioSelect (data) {
       this.radio = data
-      console.log('Author has selected:', this.radio)
+      // console.log('Author has selected:', this.radio)
     },
     handleClose (done) {
       this.$confirm('Are you sure to close this dialog?')
@@ -642,8 +634,18 @@ legend {
   color: rgb(113, 140, 189);
 }
 
+.pubChoiceAndConsentTxt {
+  margin-bottom: -0.5rem;
+}
+
 .btnSection{
-    margin-top: 1rem;
+    margin-top: 1.3rem;
+}
+
+#btnDIV{
+  width: 100%;
+  margin: 0.5rem auto;
+  clear: both;
 }
 
 h4{ color: rgb(15, 91, 94); font-style: italic;}
