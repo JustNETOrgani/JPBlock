@@ -63,7 +63,8 @@ export default {
       // 'https://cdn.pixabay.com/photo/2015/11/03/09/30/puzzle-1020431__340.jpg',
       // 'https://cdn.pixabay.com/photo/2019/10/25/10/49/audit-4576720__340.jpg',
       // 'https://cdn.pixabay.com/photo/2018/03/20/18/07/bitcoin-3244107__340.jpg',
-      'https://cdn.pixabay.com/photo/2018/01/11/21/27/desk-3076954__340.jpg'
+      'https://cdn.pixabay.com/photo/2018/01/11/21/27/desk-3076954__340.jpg',
+      'https://desha.org.bd/assets/uploads/page/original/publications.jpg'
     )
     this.startRotation()
     this.loadingImgData = false
