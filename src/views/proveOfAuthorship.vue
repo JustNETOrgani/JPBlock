@@ -118,112 +118,122 @@ export default {
         this.$refs[formName].validate(valid => {
           this.proveAuthBtnLoadState = true
           if (valid) {
-            var data = {
-              paperHash: this.proveOfAuthForm.paperHash,
-              paperTitle: web3.utils.utf8ToHex(this.proveOfAuthForm.paperTitle),
-              namesOfAuthors: this.proveOfAuthForm.namesOfAuthors,
-              idsOfAuthors: this.proveOfAuthForm.idsOfAuthors
-            }
-            console.log('Paper tracking data: ', data)
-            getHash(data.namesOfAuthors).then(hashedNames => {
-              getHash(data.idsOfAuthors).then(hashedIDs => {
-                var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
-                console.log('Contract instance created.')
-                // Smart contract and other logic continues.
-                jpBlockContract.methods.proveAuthorship(data.paperHash, data.paperTitle, hashedNames, hashedIDs).call({ from: web3.eth.defaultAccount }).then(res => {
-                  console.log('Response from Contract: ', res)
-                  if (parseInt(res) === 1) {
-                    this.proveAuthBtnLoadState = false
-                    this.$alert('Congratulations. Proof Successful. This is a published paper.', 'Result of prove of authorship', {
-                      confirmButtonText: 'OK',
-                      callback: action => {
-                        this.$message({
-                          type: 'info',
-                          message: `action: ${action}`
+            if (this.txtValidation(this.proveOfAuthForm.paperTitle) === 1 && this.txtValidation(this.proveOfAuthForm.namesOfAuthors) === 1) {
+              var data = {
+                paperHash: this.proveOfAuthForm.paperHash,
+                paperTitle: web3.utils.utf8ToHex(this.proveOfAuthForm.paperTitle),
+                namesOfAuthors: this.proveOfAuthForm.namesOfAuthors,
+                idsOfAuthors: this.proveOfAuthForm.idsOfAuthors
+              }
+              if (this.hashInputValidation(data.paperHash) === 1) {
+                console.log('Paper tracking data: ', data)
+                getHash(data.namesOfAuthors).then(hashedNames => {
+                  getHash(data.idsOfAuthors).then(hashedIDs => {
+                    var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
+                    console.log('Contract instance created.')
+                    // Smart contract and other logic continues.
+                    jpBlockContract.methods.proveAuthorship(data.paperHash, data.paperTitle, hashedNames, hashedIDs).call({ from: web3.eth.defaultAccount }).then(res => {
+                      console.log('Response from Contract: ', res)
+                      if (parseInt(res) === 1) {
+                        this.proveAuthBtnLoadState = false
+                        this.$alert('Congratulations. Proof Successful. This is a published paper.', 'Result of prove of authorship', {
+                          confirmButtonText: 'OK',
+                          callback: action => {
+                            this.$message({
+                              type: 'info',
+                              message: `action: ${action}`
+                            })
+                          }
+                        })
+                      } else if (parseInt(res) === 2) {
+                        this.proveAuthBtnLoadState = false
+                        this.$alert('Congratulations. Proof Successful. Paper has been accepted for publication.', 'Result of prove of authorship', {
+                          confirmButtonText: 'OK',
+                          callback: action => {
+                            this.$message({
+                              type: 'info',
+                              message: `action: ${action}`
+                            })
+                          }
+                        })
+                      } else if (parseInt(res) === 3) {
+                        this.proveAuthBtnLoadState = false
+                        this.$alert('Congratulations. Proof Successful. Paper is under review.', 'Result of prove of authorship', {
+                          confirmButtonText: 'OK',
+                          callback: action => {
+                            this.$message({
+                              type: 'info',
+                              message: `action: ${action}`
+                            })
+                          }
+                        })
+                      } else if (parseInt(res) === 4) {
+                        this.proveAuthBtnLoadState = false
+                        this.$alert('Congratulations. Proof Successful. Paper has been submitted to a Journal.', 'Result of prove of authorship', {
+                          confirmButtonText: 'OK',
+                          callback: action => {
+                            this.$message({
+                              type: 'info',
+                              message: `action: ${action}`
+                            })
+                          }
+                        })
+                      } else if (parseInt(res) === 5) {
+                        this.proveAuthBtnLoadState = false
+                        this.$alert('Congratulations. Proof Successful. This is a rejected paper.', 'Result of prove of authorship', {
+                          confirmButtonText: 'OK',
+                          callback: action => {
+                            this.$message({
+                              type: 'info',
+                              message: `action: ${action}`
+                            })
+                          }
+                        })
+                      } else if (parseInt(res) === 6) {
+                        this.proveAuthBtnLoadState = false
+                        this.$alert('Congratulations. Proof Successful. Paper to be revised and resubmitted.', 'Result of prove of authorship', {
+                          confirmButtonText: 'OK',
+                          callback: action => {
+                            this.$message({
+                              type: 'info',
+                              message: `action: ${action}`
+                            })
+                          }
+                        })
+                      } else if (parseInt(res) === 7) {
+                        this.proveAuthBtnLoadState = false
+                        this.$alert('Congratulations. Proof Successful. This is a revised and resubmitted paper.', 'Result of prove of authorship', {
+                          confirmButtonText: 'OK',
+                          callback: action => {
+                            this.$message({
+                              type: 'info',
+                              message: `action: ${action}`
+                            })
+                          }
+                        })
+                      } else if (parseInt(res) === 0) {
+                        this.proveAuthBtnLoadState = false
+                        this.$alert('Sorry! You Failed Proof Verification.', 'Result of prove of authorship', {
+                          confirmButtonText: 'OK',
+                          callback: action => {
+                            this.$message({
+                              type: 'info',
+                              message: `action: ${action}`
+                            })
+                          }
                         })
                       }
                     })
-                  } else if (parseInt(res) === 2) {
-                    this.proveAuthBtnLoadState = false
-                    this.$alert('Congratulations. Proof Successful. Paper has been accepted for publication.', 'Result of prove of authorship', {
-                      confirmButtonText: 'OK',
-                      callback: action => {
-                        this.$message({
-                          type: 'info',
-                          message: `action: ${action}`
-                        })
-                      }
-                    })
-                  } else if (parseInt(res) === 3) {
-                    this.proveAuthBtnLoadState = false
-                    this.$alert('Congratulations. Proof Successful. Paper is under review.', 'Result of prove of authorship', {
-                      confirmButtonText: 'OK',
-                      callback: action => {
-                        this.$message({
-                          type: 'info',
-                          message: `action: ${action}`
-                        })
-                      }
-                    })
-                  } else if (parseInt(res) === 4) {
-                    this.proveAuthBtnLoadState = false
-                    this.$alert('Congratulations. Proof Successful. Paper has been submitted to a Journal.', 'Result of prove of authorship', {
-                      confirmButtonText: 'OK',
-                      callback: action => {
-                        this.$message({
-                          type: 'info',
-                          message: `action: ${action}`
-                        })
-                      }
-                    })
-                  } else if (parseInt(res) === 5) {
-                    this.proveAuthBtnLoadState = false
-                    this.$alert('Congratulations. Proof Successful. This is a rejected paper.', 'Result of prove of authorship', {
-                      confirmButtonText: 'OK',
-                      callback: action => {
-                        this.$message({
-                          type: 'info',
-                          message: `action: ${action}`
-                        })
-                      }
-                    })
-                  } else if (parseInt(res) === 6) {
-                    this.proveAuthBtnLoadState = false
-                    this.$alert('Congratulations. Proof Successful. Paper to be revised and resubmitted.', 'Result of prove of authorship', {
-                      confirmButtonText: 'OK',
-                      callback: action => {
-                        this.$message({
-                          type: 'info',
-                          message: `action: ${action}`
-                        })
-                      }
-                    })
-                  } else if (parseInt(res) === 7) {
-                    this.proveAuthBtnLoadState = false
-                    this.$alert('Congratulations. Proof Successful. This is a revised and resubmitted paper.', 'Result of prove of authorship', {
-                      confirmButtonText: 'OK',
-                      callback: action => {
-                        this.$message({
-                          type: 'info',
-                          message: `action: ${action}`
-                        })
-                      }
-                    })
-                  } else if (parseInt(res) === 0) {
-                    this.proveAuthBtnLoadState = false
-                    this.$alert('Sorry! You Failed Proof Verification.', 'Result of prove of authorship', {
-                      confirmButtonText: 'OK',
-                      callback: action => {
-                        this.$message({
-                          type: 'info',
-                          message: `action: ${action}`
-                        })
-                      }
-                    })
-                  }
+                  })
                 })
-              })
-            })
+              } else {
+                this.proveAuthBtnLoadState = false
+                this.$message('Invalid hash detected. Please, reenter.')
+              }
+            } else {
+              this.proveAuthBtnLoadState = false
+              this.$message('Invalid paper title or author name. Please, reenter.')
+            }
           } else {
             console.log('Submission error.')
             this.proveAuthBtnLoadState = false
@@ -254,6 +264,20 @@ export default {
           this.userAccountDialog = false
         }
       })
+    },
+    hashInputValidation (input) {
+      if (/^0x[0-9A-F]{64}$/i.test(input) === true) {
+        return 1
+      } else {
+        return 0
+      }
+    },
+    txtValidation (input) {
+      if (/[a-zA-Z]$/i.test(input) === true) {
+        return 1
+      } else {
+        return 0
+      }
     },
     backToPrvPack () {
       this.$router.push('/')

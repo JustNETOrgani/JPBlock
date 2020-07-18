@@ -77,7 +77,7 @@ export default {
       rules: {
         paperHash: [
           { required: true, message: 'Please input hash of the paper', trigger: 'blur' },
-          { min: 30, message: 'Length should be at least 30', trigger: 'blur' }
+          { min: 64, message: 'Length should be at least 64', trigger: 'blur' }
         ],
         namesOfAuthors: [
           { required: true, message: 'Please input name(s) of the author(s)', trigger: 'blur' },
@@ -107,24 +107,34 @@ export default {
               paperHash: this.paperTrackingForm.paperHash,
               namesOfAuthors: this.paperTrackingForm.namesOfAuthors
             }
-            console.log('Paper tracking data: ', data)
-            getHash(data.namesOfAuthors).then(res => {
-              var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
-              console.log('Contract instance created.')
-              // Smart contract and other logic continues.
-              jpBlockContract.methods.checkPaperStatus(data.paperHash, res).call({ from: web3.eth.defaultAccount }).then(res => {
-                this.paperTrackBtnLoadState = false
-                this.$alert(res[0] + '' + web3.utils.hexToUtf8(res[1]), 'Result from Paper Tracking Service', {
-                  confirmButtonText: 'OK',
-                  callback: action => {
-                    this.$message({
-                      type: 'info',
-                      message: `action: ${action}`
+            if (this.hashInputValidation(data.paperHash) === 1) {
+              if (this.nameValidation(data.namesOfAuthors) === 1) {
+                console.log('Paper tracking data: ', data)
+                getHash(data.namesOfAuthors).then(res => {
+                  var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
+                  console.log('Contract instance created.')
+                  // Smart contract and other logic continues.
+                  jpBlockContract.methods.checkPaperStatus(data.paperHash, res).call({ from: web3.eth.defaultAccount }).then(res => {
+                    this.paperTrackBtnLoadState = false
+                    this.$alert(res[0] + '' + web3.utils.hexToUtf8(res[1]), 'Result from Paper Tracking Service', {
+                      confirmButtonText: 'OK',
+                      callback: action => {
+                        this.$message({
+                          type: 'info',
+                          message: `action: ${action}`
+                        })
+                      }
                     })
-                  }
+                  })
                 })
-              })
-            })
+              } else {
+                this.paperTrackBtnLoadState = false
+                this.$message('Invalid name detected. Please, reenter.')
+              }
+            } else {
+              this.paperTrackBtnLoadState = false
+              this.$message('Invalid paper hash. Please, reenter.')
+            }
           } else {
             console.log('Submission error.')
             this.paperTrackBtnLoadState = false
@@ -161,6 +171,20 @@ export default {
     },
     pgReload () {
       window.location.reload()
+    },
+    hashInputValidation (input) {
+      if (/^0x[0-9A-F]{64}$/i.test(input) === true) {
+        return 1
+      } else {
+        return 0
+      }
+    },
+    nameValidation (input) {
+      if (/[a-zA-Z]$/i.test(input) === true) {
+        return 1
+      } else {
+        return 0
+      }
     }
   }
 }
