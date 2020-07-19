@@ -6,7 +6,7 @@
         <el-row>
           <el-col :span="23" :offset="1">
             <el-col :span="7">
-                    <h2 id="activityHub">Journal dashboard - Activity hub</h2>
+              <h3 id="activityHub">Journal dashboard - Activity hub</h3>
             </el-col>
             <el-col :span="5">
                     <h4 class="textPlacements">Task selection area</h4>
