@@ -146,9 +146,9 @@ export default {
                     jName: web3.utils.asciiToHex(this.jUpdateForm.jName),
                     jURL: this.jUpdateForm.jURL,
                     jIF: this.jUpdateForm.jIF,
-                    jOAPrice: (this.jUpdateForm.jOAPrice) * 1000000000, // 1000000000 Gwei
-                    jnOAPrice: (this.jUpdateForm.jnOAPrice) * 1000000000,
-                    jRestrictedPrice: (this.jUpdateForm.jRestrictedPrice) * 1000000000,
+                    jOAPrice: ((this.jUpdateForm.jOAPrice) * 1000000000000000000).toString(), // 1000000000000000000 Eth.
+                    jnOAPrice: ((this.jUpdateForm.jnOAPrice) * 1000000000000000000).toString(),
+                    jRestrictedPrice: ((this.jUpdateForm.jRestrictedPrice) * 1000000000000000000).toString(),
                     jPubKey: this.jUpdateForm.jPubKey
                   }
                   console.log('J creation data: ', data)
