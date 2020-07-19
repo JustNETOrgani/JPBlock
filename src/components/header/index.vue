@@ -92,7 +92,7 @@ export default {
 
 #appHeadingOne{
     color: rgb(60, 87, 117);
-    font-size: 2.3rem;
+    font-size: 2rem;
     font-family: sans-serif;
     margin: 0.5% auto;
 }
