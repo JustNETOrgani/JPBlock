@@ -305,9 +305,9 @@ contract JPBlock{
     // Function to publish paper. This would be called by Journals only.
     function createPublication(address submittingAuthor, bytes32 paperTitle,bytes32 paperHashPrv,bytes32 paperHashNew,bytes32 paperIPFSHash) public returns (bool){
         // Paper checks.
-        require(paymentStatus[paperHashPrv].paidOrNot==1); // Only paid papers gets published.
-            require(paperMap[paperHashPrv].pState == paperState.Accepted); // Ensures that only that Journal that accepted it can publish it.
-                require(paperMap[paperHashPrv].paperToJAdd==msg.sender);// Check that paper has been accepted for publication by the required Journal.
+        require(paperMap[paperHashPrv].pState == paperState.Accepted); // Ensures that only that Journal that accepted it can publish it.
+            require(paperMap[paperHashPrv].paperToJAdd==msg.sender);// Check that paper has been accepted for publication by the required Journal.
+                require(paymentStatus[paperHashPrv].paidOrNot==1); // Only paid papers gets published.
                     require(paperMap[paperHashPrv].paperHash == paperHashPrv);
                         require(authorMap[submittingAuthor].authorAddress == submittingAuthor);// Check that the address of the author who submitted the paper matches the submitting  author's address entered.
                             paperMap[paperHashNew].authorIDhashed       = paperMap[paperHashPrv].authorIDhashed;
