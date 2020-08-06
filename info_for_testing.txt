@@ -1,0 +1,74 @@
+Test Account and Publishers
+
+Ganache Mn: excuse immune ginger error maid exile upgrade miss task private cheap analyst
+
+Acc0[Contract Owner]: 0x3c764142878ecf10fa712336cde5cc778878a294
+
+Acc1:[JustPublishers]: 0xec5bf0f1de02e5fc8fde5adebe12bd4239535b7c
+Acc2:[SWUSTJournal]:   0x136f79926505f76c3252a921937dd5ab18ded515
+*******Acc3:[SecPublishers]:  0xa179a6f917d6cdc0cea465dc20086ff1318394a5******
+
+Acc4[Author1]: 0x5c5796233ba1b2bc91a067efb41638234bd0a805
+Acc5[Author2]: 0x50942a4cf3d43854be8ce2025361d8571b05b05a
+
+***Acc6[Global User]: 0x08b55c8aabfbaf9afd7bd32442cd08859075a0a3***
+
+
+Prv0: 0x314cb452c482592382858290d7c36150d1776f32551b37fa1ffab4a9a4a20b07
+ 
+Prv1: 0xdc98df29213995bc9012600c0e6bfb338b55703db8ce64e0da91a89a9cb25b94
+Prv2: 0x6b2363f902615c1742a7c965d1f8d2ad052936433d94b685217d9f20945f914d
+Prv3: 0xc3bfc542f8a4b3f776f8399c8d5849a02dc1ff7cc949237446d300e003ebc6b6
+
+Prv4: 0x49683243966bbd284bf0f0c97797677a4c0b3815b21d6b8411c0eb51b9d0e4b7
+Prv5: 0x89601c09d45453844f1a9ecc876848531ffc31c22b892559f4dfe9d92068e646
+Prv6: 0x32a48c3a4aa927226be234a7ce56ef8fbc98036f8689a82ccb371da91fc2b940
+Prv9: 0x657167b16d19ac0d70e6a7a4691064c27d52ae20fb3fa17e406e8657249980fc
+
+
+
+Journals:
+
+Name:		JustPublishers
+Bytes32: 	0x4a7573745075626c697368657273000000000000000000000000000000000000
+URL:		https://www.justpub.com
+Imp.Fact:	37
+OA amount:	5000000000000000000 ie. 5 Ether
+nOA amoutn:	4000000000000000000
+SubscriptionP:	2000000000000000000
+Public Key:	0x292504dd1986dd79ec626e2d9aeed41e91814ddca898f69df2b1d1f27e83481d
+
+
+
+Name:		SWUSTJournal
+Bytes32: 	0x53575553544a6f75726e616c0000000000000000000000000000000000000000
+URL:		https://www.swustj.org	
+Imp.Fact:	42
+OA amount:	7000000000000000000
+nOA amoutn:	6000000000000000000
+SubscriptionP:	3000000000000000000
+Public Key:	0x5b5886749962925b7a9a72cde71c3bca6eeb83231af66276cae425845d89243f
+
+
+*******Usingthe DApp interface*******
+Name:		SecPublishers
+URL:		https://www.secpublish.org
+Imp.Fact:	46
+OA amount:	8
+nOA amoutn:	5
+SubscriptionP:	3
+Public Key:     0x2590bfab99298edec2572a0dd4a2325264c4e8ae698d81c3670e370fa1be7315
+***********************************************************************************
+
+First Hash: 0x99558e21498cae713cb8ca7a51812b2f8f57930293a0ab391fa23a40abc08ca8
+Final Hash: 0xc85e7f1b66a146ea6695d40f12495ba759935b9cff5b8b84918057b477864758
+Second Hash: 0xee3847cb6671405a7b67fbf56ef2f7a80c44bde501c9180bd14010315d1ea3f1
+Final Hash: 0x9b8b5cda8444e004e9c1d82fd4a6980d518ba7a42cd4bde6b5c08a0b3ad07fc3
+Third Hash: 0x3794dde5805c8f332fe005fdc448e5f1519379b5adb4f5144bbd470036c81b60
+Final Hash: 0x1b6a7c43f05139b868dc969a58b65c9fca52662d3e66de8edba7404257399d55
+
+
+****Request Paper***
+Rest. Hash: QmeJt3CuV9G8Tzh7UK2bGX8NPSvQaaKafHbU8q3vdsxkAa
+Rest. Hash: QmX63MNXzZSRa33N5tAJstCJWTUpkVyrbZ1D1NL8MW9euS
+User Public Key:     0x2590bfab99298edec2572a0dd4a2325264c4e8ae698d81c3670e370fa1be7315
