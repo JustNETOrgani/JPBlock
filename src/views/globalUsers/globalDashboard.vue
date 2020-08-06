@@ -98,6 +98,21 @@
               </el-table>
             </div>
             <div v-if="jDetails" v-loading="jDetailspageLoading">
+              <el-col :span="5">
+                <h3>Journal's Statistics:</h3>
+              </el-col>
+              <el-col :span="3">
+                <p>Total Publications</p><h4>{{totalPubs}}</h4>
+              </el-col>
+              <el-col :span="2">
+                <p>OA price (Eth)</p><h4>{{OApriceForPub}}</h4>
+              </el-col>
+              <el-col :span="3">
+                <p>Non-OA price (Eth)</p><h4>{{nonOApriceForPub}}</h4>
+              </el-col>
+              <el-col :span="3">
+                <p>Request paper (Eth)</p><h4>{{priceForPaperReq}}</h4>
+              </el-col>
                 <el-table
                 :data="pageTableData"
                 style="width: 100%"
@@ -185,6 +200,10 @@ export default {
       totalRegJ: '',
       pageTableData: [],
       search: '',
+      totalPubs: '',
+      OApriceForPub: '',
+      nonOApriceForPub: '',
+      priceForPaperReq: '',
       gUserData: false,
       recPaidPapers: false,
       jDetails: false,
@@ -227,11 +246,7 @@ export default {
         { label: 'State of Journal', prop: 'jState', width: '150px' },
         { label: 'Public Key of Journal', prop: 'jPubKey', width: '300px' },
         { label: 'Reputation score', prop: 'jReputationScore', width: '100px' },
-        { label: 'Impact Factor', prop: 'jIF', width: '80px' },
-        { label: 'Publications', prop: 'jTotalPub', width: '110px' },
-        { label: 'OA price (Eth)', prop: 'jOAprice', width: '90px' },
-        { label: 'Non-OA price (Eth)', prop: 'jnOAprice', width: '125px' },
-        { label: 'Request paper (Eth)', prop: 'jReqPrice', width: '125px' }
+        { label: 'Impact Factor', prop: 'jIF', width: '80px' }
       ],
       regJournalsDataLabel: [
         { label: 'Name of journal', prop: 'jName', width: '360px' },
@@ -505,13 +520,13 @@ export default {
                 this.pageTableData[i].jURL = res[1]
                 this.pageTableData[i].jState = res[2]
                 this.pageTableData[i].jReputationScore = res[3]
-                this.pageTableData[i].jTotalPub = res[4]
                 this.pageTableData[i].jIF = res[5] / 10 // To represent it as a decimal number.
-                this.pageTableData[i].jOAprice = web3.utils.fromWei(res[6], 'ether')
-                this.pageTableData[i].jnOAprice = web3.utils.fromWei(res[7], 'ether')
-                this.pageTableData[i].jReqPrice = web3.utils.fromWei(res[8], 'ether')
                 this.pageTableData[i].jPubKey = res[9]
               }
+              this.totalPubs = res[4]
+              this.OApriceForPub = web3.utils.fromWei(res[6], 'ether')
+              this.nonOApriceForPub = web3.utils.fromWei(res[7], 'ether')
+              this.priceForPaperReq = web3.utils.fromWei(res[8], 'ether')
               this.jDetailspageLoading = false
               this.gUserBtnLoadState = false
               this.defaultPageItem = false
