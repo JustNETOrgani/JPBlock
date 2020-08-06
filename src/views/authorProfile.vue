@@ -186,7 +186,9 @@ export default {
                   // Regrex for ^ negation of the set (word, underscores and whitespace) enclosed in [] and making them global and case-insenstitive.
                   this.pageTableData[i].paperTitles = web3.utils.hexToAscii(res[5][i]).replace(/[^\w\s]/gi, '') // Paper titles.
                   if (res[4].length > 0) {
-                    this.pageTableData[i].OApapers = getIPFSstring(res[4][i]) // All OA papers.
+                    for (let x = 0; x < res[4].length; x++) {
+                      this.pageTableData[x].OApapers = getIPFSstring(res[4][x]) // All OA papers.
+                    }
                   }
                 }
                 this.totalPubs = res[0]
