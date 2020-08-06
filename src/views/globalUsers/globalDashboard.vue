@@ -27,6 +27,7 @@
                               <el-option label="Total Open Access Publications" value="totalOAPub"></el-option>
                               <el-option label="Get all Open Access Papers" value="oaPapers"></el-option>
                               <el-option label="Published restricted papers" value="pubNonOApapers"></el-option>
+                              <el-option label="Received paid papers" value="recPaidPapers"></el-option>
                               <el-option label="View Registered Journals" value="regJournals"></el-option>
                               <el-option label="View details about a Journal" value="journalDetail"></el-option>
                           </el-select>
@@ -73,6 +74,22 @@
                 <template v-for="(item, index) in gUserNonOAdataLabel">
                   <el-table-column
                     align="center"
+                    :key="index"
+                    :prop="item.prop"
+                    :label="item.label" :width="item.width">
+                  </el-table-column>
+                </template>
+              </el-table>
+            </div>
+            <div v-else-if="recPaidPapers" v-loading="recPaidPapersLoading">
+                <el-table
+                :data="pageTableData"
+                style="width: 100%"
+                height="550px"
+                >
+                <!--Building table body-->
+                <template v-for="(item, index) in recPaidPaperstableLabel">
+                  <el-table-column
                     :key="index"
                     :prop="item.prop"
                     :label="item.label" :width="item.width">
@@ -154,7 +171,7 @@
 import web3 from '@/assets/js/web3'
 import { ABI, contractAddress, suppliedGas } from '@/assets/js/contractABI'
 import { getIPFSstring } from '@/assets/js/bufferConvert'
-// import convertIPFSstringToBytes from '@/assets/js/convertIPFShash.js'
+import convertIPFSstringToBytes from '@/assets/js/convertIPFShash.js'
 
 export default {
   // name: 'Home',
@@ -169,12 +186,14 @@ export default {
       pageTableData: [],
       search: '',
       gUserData: false,
+      recPaidPapers: false,
       jDetails: false,
       gUserNonOAdata: false,
       regJournalsData: false,
       defaultPageItem: false,
       userAccountDialog: false,
       getUserAccountLoadState: false,
+      recPaidPapersLoading: false,
       gUserPageLoading: false,
       jDetailspageLoading: false,
       regJsPageLoading: false,
@@ -191,11 +210,16 @@ export default {
       },
       // Table labels begin.
       gUserDataLabel: [
+        { label: 'Title of published paper', prop: 'paperTitle', width: '420px' },
         { label: 'IPFS hashes of Open Access publications', prop: 'OApapers', width: '420px' }
       ],
       gUserNonOAdataLabel: [
         { label: 'Title of paper', prop: 'paperTitle', width: '300px' },
         { label: 'IPFS hashes of non Open Access publications', prop: 'paperIPFSHash', width: '420px' }
+      ],
+      recPaidPaperstableLabel: [
+        { label: 'IPFS link of requested paper', prop: 'paperIPFSHashReq', width: '560px' },
+        { label: 'IPFS link to download file', prop: 'perUserIPFSencryptedLink' }
       ],
       jDetailsDataLabel: [
         { label: 'Name of Journal', prop: 'jName', width: '150px' },
@@ -261,6 +285,9 @@ export default {
               this.gUserNonOApageLoading = true
               this.gUserBtnLoadState = true
               this.getPubNonOApapers()
+            } else if (this.gUserTasks.gTask === 'recPaidPapers') {
+              this.gUserBtnLoadState = true
+              this.getReceivedPaidPapers()
             } else if (this.gUserTasks.gTask === 'regJournals') {
               this.regJsPageLoading = true
               this.gUserBtnLoadState = true
@@ -310,28 +337,37 @@ export default {
       this.regJournalsData = false
       var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
       console.log('Contract instance created.')
-      jpBlockContract.methods.getOpenAccesspapers().call({ from: web3.eth.defaultAccount }).then(res => {
-        if (res.length > 0) {
-          for (let i = 0; i < res.length; i++) {
-            this.pageTableData[i] = []
-            this.pageTableData[i].OApapers = getIPFSstring(res[i])
+      jpBlockContract.getPastEvents('publishedOAPaper', { fromBlock: 0, toBlock: 'latest' }, (err, results) => {
+        console.log('Total entries: ', Object.keys(results).length)
+        if (err) {
+          this.gUserData = false
+          this.gUserBtnLoadState = false
+          this.$message.error('Sorry! Error retrieving data. Please, try again later.')
+        } else {
+          if (Object.keys(results).length > 0) {
+            console.log('Results: ', results)
+            for (let i = 0; i < Object.keys(results).length > 0; i++) {
+              this.pageTableData[i] = []
+              this.pageTableData[i].OApapers = getIPFSstring(results[i].returnValues.paperIPFShash)
+              this.pageTableData[i].paperTitle = web3.utils.hexToUtf8(results[i].returnValues.title)
+              this.gUserPageLoading = false
+              this.gUserBtnLoadState = false
+              this.defaultPageItem = false
+              this.gUserData = true
+            }
+          } else {
             this.gUserPageLoading = false
             this.gUserBtnLoadState = false
-            this.defaultPageItem = false
-            this.gUserData = true
+            this.$alert('No Open Access Publications found.', 'Status of Open Access Papers', {
+              confirmButtonText: 'OK',
+              callback: action => {
+                this.$message({
+                  type: 'info',
+                  message: `action: ${action}`
+                })
+              }
+            })
           }
-        } else {
-          this.gUserPageLoading = false
-          this.gUserBtnLoadState = false
-          this.$alert('No Open Access Publications found.', 'Status of Open Access Papers', {
-            confirmButtonText: 'OK',
-            callback: action => {
-              this.$message({
-                type: 'info',
-                message: `action: ${action}`
-              })
-            }
-          })
         }
       })
     },
@@ -387,6 +423,63 @@ export default {
           this.gUserBtnLoadState = false
           this.$message('Invalid Ethereum address format.')
         }
+      })
+    },
+    getReceivedPaidPapers () {
+      this.pageTableData.splice(0, this.pageTableData.length) // Remove all previously stored values.
+      this.recPaidPapersLoading = true
+      this.gUserData = false
+      this.gUserNonOAdata = false
+      this.regJournalsData = false
+      // this.recPaidPapers = false
+      this.publishedRestrictedPapers = false
+      // Perform required task and return true.
+      this.$prompt('Please enter the IPFS link you requested.', 'Information required', {
+        confirmButtonText: 'Continue',
+        cancelButtonText: 'Cancel',
+        inputPlaceholder: 'IPFS hash of the paper.'
+      }).then(({ value }) => {
+        if (this.ipfsInputValidation(value) === 1) {
+          console.log('Valid IPFS hash entered', value)
+          var jpBlockContract = new web3.eth.Contract(ABI, contractAddress, { defaultGas: suppliedGas })// End of ABi Code from Remix.
+          console.log('Contract instance for received paid-for papers created.')
+          jpBlockContract.getPastEvents('userRequestMet', { filter: { paperIPFSHashReq: [convertIPFSstringToBytes(value)] }, fromBlock: 0, toBlock: 'latest' },
+            (err, results) => {
+              if (err) {
+                this.recPaidPapersLoading = false
+                this.gUserBtnLoadState = false
+                this.$message.error('Sorry! Error retrieving data. Please, try again later.')
+              } else {
+              // Get the data and display.
+                if (Object.keys(results).length === 0) {
+                  console.log('Empty data.')
+                  this.gUserBtnLoadState = false
+                  this.defaultPageItem = true
+                } else {
+                  // Results is not empty hence get and display.
+                  console.log('Total paid for papers: ', Object.keys(results).length)
+                  for (let i = 0; i < Object.keys(results).length; i++) {
+                    this.pageTableData[i] = []
+                    this.pageTableData[i].paperIPFSHashReq = getIPFSstring(results[i].returnValues.paperIPFSHashReq)
+                    this.pageTableData[i].perUserIPFSencryptedLink = getIPFSstring(results[i].returnValues.perUserIPFSencryptedLink)
+                  }
+                  this.recPaidPapersLoading = false
+                  this.defaultPageItem = false
+                  this.gUserBtnLoadState = false
+                  // console.log('Objet to display as table: ', this.pageTableData)
+                  this.recPaidPapers = true
+                }
+              }
+            })
+        } else {
+          this.recPaidPapersLoading = false
+          this.gUserBtnLoadState = false
+          this.$message('Invalid IPFS hash entered.')
+        }
+      }).catch((err) => {
+        console.log('Error: ', err)
+        this.gUserBtnLoadState = false
+        this.$message('Operation canceled.')
       })
     },
     getAjournalDetail () {
