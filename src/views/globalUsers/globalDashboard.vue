@@ -361,7 +361,7 @@ export default {
         } else {
           if (Object.keys(results).length > 0) {
             console.log('Results: ', results)
-            for (let i = 0; i < Object.keys(results).length > 0; i++) {
+            for (let i = 0; i < Object.keys(results).length; i++) {
               this.pageTableData[i] = []
               this.pageTableData[i].OApapers = getIPFSstring(results[i].returnValues.paperIPFShash)
               this.pageTableData[i].paperTitle = web3.utils.hexToUtf8(results[i].returnValues.title)
