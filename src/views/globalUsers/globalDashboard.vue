@@ -452,6 +452,7 @@ export default {
       this.$prompt('Please enter the IPFS link you requested.', 'Information required', {
         confirmButtonText: 'Continue',
         cancelButtonText: 'Cancel',
+        inputPattern: /^Qm[0-9A-Z]{44}$/i,
         inputPlaceholder: 'IPFS hash of the paper.'
       }).then(({ value }) => {
         if (this.ipfsInputValidation(value) === 1) {
@@ -470,6 +471,7 @@ export default {
                   console.log('Empty data.')
                   this.gUserBtnLoadState = false
                   this.defaultPageItem = true
+                  this.$message('Sorry! Paper not yet available to you.')
                 } else {
                   // Results is not empty hence get and display.
                   console.log('Total paid for papers: ', Object.keys(results).length)
@@ -572,6 +574,7 @@ export default {
         } else {
           this.regJsPageLoading = false
           this.gUserBtnLoadState = false
+          this.defaultPageItem = true
           this.$alert('Sorry! There is no registered journal at the moment on JPBlock.', 'Journals on JPBlock', {
             confirmButtonText: 'OK',
             callback: action => {
