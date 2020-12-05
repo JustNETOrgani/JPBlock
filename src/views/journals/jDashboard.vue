@@ -209,7 +209,7 @@ export default {
         { label: 'Hash of the revised paper', prop: 'newPaperHash' }
       ],
       paidPaperstableLabel: [
-        { label: 'Payee', prop: 'source', width: '380px' },
+        // { label: 'Payee', prop: 'source', width: '380px' }, // Commented for privacy reasons.
         { label: 'Hash of the paid paper', prop: 'paperHash' }
       ],
       reqPaperstableLabel: [
@@ -452,7 +452,7 @@ export default {
               console.log('Total paid for papers: ', Object.keys(results).length)
               for (let i = 0; i < Object.keys(results).length; i++) {
                 this.pageTableData[i] = []
-                this.pageTableData[i].source = results[i].returnValues.source
+                // this.pageTableData[i].source = results[i].returnValues.source // Commented for privacy reasons.
                 this.pageTableData[i].paperHash = results[i].returnValues.paperHash
               }
               this.jDashboardTaskBtnLoadState = false
