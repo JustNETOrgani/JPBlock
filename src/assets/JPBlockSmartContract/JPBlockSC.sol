@@ -87,7 +87,7 @@ contract JPBlock{
     event paperSubDetails(bytes32 paperTitle,address indexed submittingAuthor,string jURL);
     event journalRecSub(address indexed jAddress,bytes32 paperTitle,bytes32 paperHash,address submittingAuthor,bytes32 paperIPFShash, bytes32 suppleFileIPFShash,bytes32 userPubKey);
     event publishedOAPaper(bytes32 title,bytes32 paperIPFShash);
-    event paymentMade(address source,bytes32 paperHash,address indexed to);
+    event paymentMade(bytes32 paperHash,address indexed to); // Address source removed as privacy measure.
     event userRequestedPaper(bytes32 IPFShash,bytes32 userPUbKey,address indexed jAdd);
     event restrictedPaperPublished(bytes32 paperTitle,bytes32 paperIPFSHash,address indexed jAdd);
     event userRequestMet(bytes32 indexed paperIPFSHashReq,bytes32 perUserIPFSencryptedLink);
@@ -289,7 +289,7 @@ contract JPBlock{
             paymentStatus[paperHash].paidOrNot = 1;
             balance[msg.sender] -=msg.value; // Deduct amount to pay from msg.sender.
             address(jAdd).transfer(msg.value); // Transfer Eth to Journal.
-            paymentMade(msg.sender,paperHash,jAdd);
+            paymentMade(paperHash,jAdd); // Remove msg.sender as a privacy-preserving measure.
             return true; 
         }
         else{
@@ -297,7 +297,7 @@ contract JPBlock{
                 paymentStatus[paperHash].paidOrNot = 1;
                 balance[msg.sender] -=msg.value; // Deduct amount to pay from msg.sender.
                 address(jAdd).transfer(msg.value); // Transfer Eth to Journal.
-                paymentMade(msg.sender,paperHash,jAdd);
+                paymentMade(paperHash,jAdd);
                 return true; 
         }
     }
